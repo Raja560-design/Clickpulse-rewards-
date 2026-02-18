@@ -1,0 +1,231 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ClickPulse Pro - Gamified Rewards</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Space+Grotesk:wght@500;700&display=swap');
+        
+        body {
+            font-family: 'Inter', sans-serif;
+            background: #0a0a0f;
+            color: #ffffff;
+        }
+        
+        .font-display { font-family: 'Space Grotesk', sans-serif; }
+        
+        .gradient-text {
+            background: linear-gradient(135deg, #818cf8 0%, #c084fc 50%, #f472b6 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+        
+        .glass-card {
+            background: rgba(255, 255, 255, 0.03);
+            backdrop-filter: blur(20px);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+        }
+        
+        .btn-primary {
+            background: linear-gradient(135deg, #6366f1 0%, #8b5cf6 100%);
+        }
+        
+        .click-pulse {
+            animation: pulse 2s infinite;
+        }
+        
+        @keyframes pulse {
+            0%, 100% { transform: scale(1); box-shadow: 0 0 0 0 rgba(99, 102, 241, 0.7); }
+            50% { transform: scale(1.05); box-shadow: 0 0 0 20px rgba(99, 102, 241, 0); }
+        }
+        
+        .progress-bar {
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 999px;
+            overflow: hidden;
+        }
+        
+        .progress-fill {
+            background: linear-gradient(90deg, #6366f1, #8b5cf6);
+            height: 100%;
+            transition: width 0.5s ease;
+        }
+    </style>
+</head>
+<body class="min-h-screen">
+    <!-- Navbar -->
+    <nav class="fixed w-full z-50 top-0 glass-card border-b border-white/5">
+        <div class="max-w-7xl mx-auto px-4 py-4 flex justify-between items-center">
+            <div class="flex items-center space-x-2">
+                <div class="w-10 h-10 rounded-xl bg-gradient-to-br from-indigo-500 to-purple-600 flex items-center justify-center">
+                    <i class="fas fa-bolt text-white"></i>
+                </div>
+                <span class="font-display text-2xl font-bold gradient-text">ClickPulse</span>
+            </div>
+            <div class="flex items-center space-x-2 px-4 py-2 rounded-full glass-card">
+                <i class="fas fa-wallet text-indigo-400"></i>
+                <span class="font-mono font-bold">₹<span id="balance">0.00</span></span>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Main Content -->
+    <main class="pt-24 pb-12 px-4 max-w-md mx-auto">
+        
+        <!-- Balance Card -->
+        <div class="glass-card rounded-3xl p-6 mb-6 text-center">
+            <p class="text-gray-400 text-sm mb-2">Total Earnings</p>
+            <h1 class="text-4xl font-display font-bold gradient-text mb-2">₹<span id="totalEarnings">0.00</span></h1>
+            <div class="flex justify-center items-center space-x-2 text-green-400 text-sm">
+                <i class="fas fa-arrow-up"></i>
+                <span>+₹<span id="todayEarnings">0.00</span> today</span>
+            </div>
+        </div>
+
+        <!-- Click Button -->
+        <div class="glass-card rounded-3xl p-8 text-center mb-6">
+            <div class="mb-6">
+                <div class="text-5xl mb-4">🪙</div>
+                <h3 class="text-xl font-bold mb-2">Daily Click Reward</h3>
+                <p class="text-gray-400 text-sm">Click to earn instant rewards!</p>
+            </div>
+
+            <button onclick="handleClick()" id="clickBtn" class="click-pulse w-28 h-28 rounded-full btn-primary flex items-center justify-center text-3xl mx-auto mb-4 shadow-2xl active:scale-95 transition">
+                <i class="fas fa-hand-pointer"></i>
+            </button>
+
+            <p class="text-sm text-gray-400">Next reward: <span class="text-green-400 font-bold">₹<span id="nextReward">0.50</span></span></p>
+            <p class="text-xs text-gray-500 mt-2">Resets in: <span id="timer" class="font-mono text-indigo-400">00:00</span></p>
+        </div>
+
+        <!-- Stats -->
+        <div class="grid grid-cols-3 gap-3 mb-6">
+            <div class="glass-card rounded-2xl p-4 text-center">
+                <div class="text-xl font-bold" id="clicks">0</div>
+                <div class="text-xs text-gray-400">Clicks</div>
+            </div>
+            <div class="glass-card rounded-2xl p-4 text-center">
+                <div class="text-xl font-bold text-orange-400" id="streak">0</div>
+                <div class="text-xs text-gray-400">Streak</div>
+            </div>
+            <div class="glass-card rounded-2xl p-4 text-center">
+                <div class="text-xl font-bold text-pink-400" id="level">1</div>
+                <div class="text-xs text-gray-400">Level</div>
+            </div>
+        </div>
+
+        <!-- XP Progress -->
+        <div class="glass-card rounded-2xl p-4 mb-6">
+            <div class="flex justify-between text-sm mb-2">
+                <span class="text-gray-400">XP Progress</span>
+                <span class="text-indigo-400 font-semibold"><span id="xp">0</span>/100</span>
+            </div>
+            <div class="progress-bar h-2">
+                <div id="xpBar" class="progress-fill" style="width: 0%"></div>
+            </div>
+        </div>
+
+        <!-- Subscription -->
+        <div class="glass-card rounded-3xl p-6 mb-6">
+            <h3 class="text-lg font-bold mb-4 text-center">Upgrade Plan</h3>
+            <div class="space-y-3">
+                <div class="flex justify-between items-center p-3 rounded-xl bg-white/5">
+                    <div>
+                        <p class="font-semibold text-sm">Free</p>
+                        <p class="text-xs text-gray-400">₹5-8/day</p>
+                    </div>
+                    <span class="text-xs bg-gray-700 px-2 py-1 rounded">Current</span>
+                </div>
+                <div class="flex justify-between items-center p-3 rounded-xl bg-indigo-500/20 border border-indigo-500/50">
+                    <div>
+                        <p class="font-semibold text-sm text-indigo-400">Pro - ₹99/mo</p>
+                        <p class="text-xs text-gray-400">₹25-40/day</p>
+                    </div>
+                    <button onclick="upgrade('pro')" class="bg-indigo-500 text-white text-xs px-3 py-1 rounded-full">Upgrade</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Withdraw -->
+        <button onclick="withdraw()" class="w-full py-4 rounded-2xl bg-gradient-to-r from-green-500 to-emerald-600 text-white font-bold shadow-lg">
+            Withdraw (Min ₹100)
+        </button>
+    </main>
+
+    <script>
+        let state = {
+            balance: 0,
+            total: 0,
+            today: 0,
+            clicks: 0,
+            streak: 0,
+            level: 1,
+            xp: 0,
+            multiplier: 1,
+            nextReward: 0.5
+        };
+
+        function handleClick() {
+            const reward = state.nextReward * state.multiplier;
+            state.balance += reward;
+            state.total += reward;
+            state.today += reward;
+            state.clicks++;
+            state.xp += 10;
+            
+            if (state.xp >= 100) {
+                state.level++;
+                state.xp = 0;
+                alert('🎉 Level Up! Level ' + state.level);
+            }
+            
+            state.nextReward = (Math.random() * 0.5 + 0.25).toFixed(2);
+            updateUI();
+        }
+
+        function updateUI() {
+            document.getElementById('balance').textContent = state.balance.toFixed(2);
+            document.getElementById('totalEarnings').textContent = state.total.toFixed(2);
+            document.getElementById('todayEarnings').textContent = state.today.toFixed(2);
+            document.getElementById('clicks').textContent = state.clicks;
+            document.getElementById('streak').textContent = state.streak;
+            document.getElementById('level').textContent = state.level;
+            document.getElementById('xp').textContent = state.xp;
+            document.getElementById('xpBar').style.width = state.xp + '%';
+            document.getElementById('nextReward').textContent = state.nextReward;
+        }
+
+        function upgrade(plan) {
+            if (plan === 'pro') {
+                state.multiplier = 2;
+                alert('Pro activated! 2x earnings!');
+            }
+        }
+
+        function withdraw() {
+            if (state.balance >= 100) {
+                alert('Withdrawal request: ₹' + state.balance.toFixed(2));
+                state.balance = 0;
+                updateUI();
+            } else {
+                alert('Minimum ₹100 required!');
+            }
+        }
+
+        // Timer
+        setInterval(() => {
+            const now = new Date();
+            const midnight = new Date();
+            midnight.setHours(24, 0, 0, 0);
+            const diff = midnight - now;
+            const hours = Math.floor(diff / 3600000);
+            const mins = Math.floor((diff % 3600000) / 60000);
+            document.getElementById('timer').textContent = 
+                `${hours.toString().padStart(2, '0')}:${mins.toString().padStart(2, '0')}`;
+        }, 1000);
+    </script>
+</body>
+  </html>
