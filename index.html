@@ -3,16 +3,19 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>ClickPulse Pro - Gamified Rewards</title>
+    <title>ClickPulse Pro - Earn Real Money</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Space+Grotesk:wght@500;700&display=swap');
         
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        
         body {
             font-family: 'Inter', sans-serif;
             background: #0a0a0f;
             color: #ffffff;
+            min-height: 100vh;
         }
         
         .font-display { font-family: 'Space Grotesk', sans-serif; }
@@ -31,6 +34,18 @@
         
         .btn-primary {
             background: linear-gradient(135deg, #6366f1 0%, #8b5cf6 100%);
+            transition: all 0.3s ease;
+        }
+        
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 40px -10px rgba(99, 102, 241, 0.5);
+        }
+        
+        .btn-gold {
+            background: linear-gradient(135deg, #fbbf24 0%, #f59e0b 100%);
+            color: #000;
+            font-weight: 700;
         }
         
         .click-pulse {
@@ -53,10 +68,93 @@
             height: 100%;
             transition: width 0.5s ease;
         }
+        
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.8);
+            z-index: 1000;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+        
+        .modal.active { display: flex; }
+        
+        .ad-container {
+            background: #1a1a2e;
+            border-radius: 20px;
+            padding: 20px;
+            max-width: 400px;
+            width: 100%;
+            text-align: center;
+        }
+        
+        .timer-circle {
+            width: 80px;
+            height: 80px;
+            border-radius: 50%;
+            border: 4px solid #6366f1;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 20px auto;
+            font-size: 24px;
+            font-weight: bold;
+        }
+        
+        .toast {
+            position: fixed;
+            top: 100px;
+            right: 20px;
+            padding: 16px 24px;
+            border-radius: 12px;
+            color: white;
+            font-weight: 600;
+            z-index: 2000;
+            transform: translateX(400px);
+            transition: transform 0.3s ease;
+        }
+        
+        .toast.show { transform: translateX(0); }
+        .toast.success { background: linear-gradient(135deg, #10b981, #059669); }
+        .toast.error { background: linear-gradient(135deg, #ef4444, #dc2626); }
+        .toast.info { background: linear-gradient(135deg, #6366f1, #8b5cf6); }
+        
+        .plan-card {
+            transition: all 0.3s ease;
+            cursor: pointer;
+        }
+        
+        .plan-card:hover { transform: translateY(-5px); }
+        .plan-card.selected {
+            border: 2px solid #6366f1;
+            box-shadow: 0 0 30px rgba(99, 102, 241, 0.3);
+        }
+        
+        .withdraw-method {
+            transition: all 0.3s ease;
+            cursor: pointer;
+        }
+        
+        .withdraw-method:hover { background: rgba(255,255,255,0.05); }
+        .withdraw-method.selected {
+            border: 2px solid #10b981;
+            background: rgba(16, 185, 129, 0.1);
+        }
+        
+        .hidden { display: none !important; }
     </style>
 </head>
-<body class="min-h-screen">
-    <!-- Navbar -->
+<body>
+    <!-- Toast Notification -->
+    <div id="toast" class="toast"></div>
+
+    <!-- Navigation -->
     <nav class="fixed w-full z-50 top-0 glass-card border-b border-white/5">
         <div class="max-w-7xl mx-auto px-4 py-4 flex justify-between items-center">
             <div class="flex items-center space-x-2">
@@ -64,10 +162,11 @@
                     <i class="fas fa-bolt text-white"></i>
                 </div>
                 <span class="font-display text-2xl font-bold gradient-text">ClickPulse</span>
+                <span id="planBadge" class="px-2 py-0.5 rounded-full bg-gray-700 text-xs font-semibold">FREE</span>
             </div>
             <div class="flex items-center space-x-2 px-4 py-2 rounded-full glass-card">
                 <i class="fas fa-wallet text-indigo-400"></i>
-                <span class="font-mono font-bold">₹<span id="balance">0.00</span></span>
+                <span class="font-mono font-bold text-lg">₹<span id="navBalance">0.00</span></span>
             </div>
         </div>
     </nav>
@@ -76,156 +175,274 @@
     <main class="pt-24 pb-12 px-4 max-w-md mx-auto">
         
         <!-- Balance Card -->
-        <div class="glass-card rounded-3xl p-6 mb-6 text-center">
+        <div class="glass-card rounded-3xl p-6 mb-6 text-center relative overflow-hidden">
+            <div class="absolute top-0 right-0 w-32 h-32 bg-indigo-500/20 rounded-full blur-3xl -mr-16 -mt-16"></div>
+            
             <p class="text-gray-400 text-sm mb-2">Total Earnings</p>
-            <h1 class="text-4xl font-display font-bold gradient-text mb-2">₹<span id="totalEarnings">0.00</span></h1>
-            <div class="flex justify-center items-center space-x-2 text-green-400 text-sm">
+            <h1 class="text-5xl font-display font-bold gradient-text mb-2">₹<span id="totalEarnings">0.00</span></h1>
+            <div class="flex justify-center items-center space-x-2 text-green-400 text-sm mb-4">
                 <i class="fas fa-arrow-up"></i>
                 <span>+₹<span id="todayEarnings">0.00</span> today</span>
             </div>
+            
+            <!-- Daily Limit Progress -->
+            <div class="glass-card rounded-xl p-3">
+                <div class="flex justify-between text-xs mb-2">
+                    <span class="text-gray-400">Daily Limit</span>
+                    <span class="text-indigo-400 font-semibold">₹<span id="earnedToday">0</span> / ₹<span id="dailyLimit">8</span></span>
+                </div>
+                <div class="progress-bar h-2">
+                    <div id="limitBar" class="progress-fill" style="width: 0%"></div>
+                </div>
+            </div>
         </div>
 
-        <!-- Click Button -->
-        <div class="glass-card rounded-3xl p-8 text-center mb-6">
-            <div class="mb-6">
-                <div class="text-5xl mb-4">🪙</div>
-                <h3 class="text-xl font-bold mb-2">Daily Click Reward</h3>
-                <p class="text-gray-400 text-sm">Click to earn instant rewards!</p>
+        <!-- Action Buttons -->
+        <div class="grid grid-cols-2 gap-4 mb-6">
+            <!-- Click Button -->
+            <div class="glass-card rounded-3xl p-6 text-center">
+                <div class="text-4xl mb-3">👆</div>
+                <button onclick="handleClick()" id="clickBtn" class="click-pulse w-20 h-20 rounded-full btn-primary flex items-center justify-center text-2xl mx-auto mb-3 shadow-2xl active:scale-95 transition">
+                    <i class="fas fa-hand-pointer"></i>
+                </button>
+                <p class="text-xs text-gray-400 mb-1">Click Reward</p>
+                <p class="text-lg font-bold text-green-400">₹<span id="clickReward">0.50</span></p>
+                <p class="text-xs text-gray-500 mt-1" id="clickTimer">Ready!</p>
             </div>
 
-            <button onclick="handleClick()" id="clickBtn" class="click-pulse w-28 h-28 rounded-full btn-primary flex items-center justify-center text-3xl mx-auto mb-4 shadow-2xl active:scale-95 transition">
-                <i class="fas fa-hand-pointer"></i>
-            </button>
-
-            <p class="text-sm text-gray-400">Next reward: <span class="text-green-400 font-bold">₹<span id="nextReward">0.50</span></span></p>
-            <p class="text-xs text-gray-500 mt-2">Resets in: <span id="timer" class="font-mono text-indigo-400">00:00</span></p>
+            <!-- Watch Ad Button -->
+            <div class="glass-card rounded-3xl p-6 text-center">
+                <div class="text-4xl mb-3">📺</div>
+                <button onclick="openAdModal()" id="adBtn" class="w-20 h-20 rounded-full bg-gradient-to-r from-pink-500 to-rose-600 flex items-center justify-center text-2xl mx-auto mb-3 shadow-2xl active:scale-95 transition">
+                    <i class="fas fa-play"></i>
+                </button>
+                <p class="text-xs text-gray-400 mb-1">Watch Ad</p>
+                <p class="text-lg font-bold text-pink-400">₹<span id="adReward">5.00</span></p>
+                <p class="text-xs text-gray-500 mt-1" id="adTimer">Ready!</p>
+            </div>
         </div>
 
         <!-- Stats -->
         <div class="grid grid-cols-3 gap-3 mb-6">
             <div class="glass-card rounded-2xl p-4 text-center">
-                <div class="text-xl font-bold" id="clicks">0</div>
+                <div class="text-xl font-bold" id="totalClicks">0</div>
                 <div class="text-xs text-gray-400">Clicks</div>
             </div>
             <div class="glass-card rounded-2xl p-4 text-center">
-                <div class="text-xl font-bold text-orange-400" id="streak">0</div>
+                <div class="text-xl font-bold text-orange-400" id="streakDays">0</div>
                 <div class="text-xs text-gray-400">Streak</div>
             </div>
             <div class="glass-card rounded-2xl p-4 text-center">
-                <div class="text-xl font-bold text-pink-400" id="level">1</div>
+                <div class="text-xl font-bold text-pink-400" id="userLevel">1</div>
                 <div class="text-xs text-gray-400">Level</div>
             </div>
         </div>
 
-        <!-- XP Progress -->
-        <div class="glass-card rounded-2xl p-4 mb-6">
-            <div class="flex justify-between text-sm mb-2">
-                <span class="text-gray-400">XP Progress</span>
-                <span class="text-indigo-400 font-semibold"><span id="xp">0</span>/100</span>
-            </div>
-            <div class="progress-bar h-2">
-                <div id="xpBar" class="progress-fill" style="width: 0%"></div>
-            </div>
-        </div>
-
-        <!-- Subscription -->
+        <!-- Subscription Section -->
         <div class="glass-card rounded-3xl p-6 mb-6">
-            <h3 class="text-lg font-bold mb-4 text-center">Upgrade Plan</h3>
-            <div class="space-y-3">
-                <div class="flex justify-between items-center p-3 rounded-xl bg-white/5">
-                    <div>
-                        <p class="font-semibold text-sm">Free</p>
-                        <p class="text-xs text-gray-400">₹5-8/day</p>
+            <div class="flex justify-between items-center mb-4">
+                <h3 class="text-lg font-bold">Upgrade Plan</h3>
+                <span class="text-xs text-gray-400">Higher earnings!</span>
+            </div>
+            
+            <div class="space-y-3" id="planContainer">
+                <!-- Free Plan -->
+                <div class="plan-card glass-card rounded-xl p-4 border border-white/10" onclick="selectPlan('free')">
+                    <div class="flex justify-between items-center">
+                        <div>
+                            <p class="font-bold">Free</p>
+                            <p class="text-xs text-gray-400">₹5-8 daily limit</p>
+                        </div>
+                        <div class="text-right">
+                            <p class="text-lg font-bold">₹0</p>
+                            <p class="text-xs text-gray-500">/month</p>
+                        </div>
                     </div>
-                    <span class="text-xs bg-gray-700 px-2 py-1 rounded">Current</span>
                 </div>
-                <div class="flex justify-between items-center p-3 rounded-xl bg-indigo-500/20 border border-indigo-500/50">
-                    <div>
-                        <p class="font-semibold text-sm text-indigo-400">Pro - ₹99/mo</p>
-                        <p class="text-xs text-gray-400">₹25-40/day</p>
+
+                <!-- Pro Plan -->
+                <div class="plan-card glass-card rounded-xl p-4 border border-indigo-500/50 bg-indigo-500/10" onclick="selectPlan('pro')">
+                    <div class="flex justify-between items-center">
+                        <div>
+                            <p class="font-bold text-indigo-400">Pro ⭐</p>
+                            <p class="text-xs text-gray-400">₹25-40 daily limit</p>
+                        </div>
+                        <div class="text-right">
+                            <p class="text-lg font-bold text-indigo-400">₹99</p>
+                            <p class="text-xs text-gray-500">/month</p>
+                        </div>
                     </div>
-                    <button onclick="upgrade('pro')" class="bg-indigo-500 text-white text-xs px-3 py-1 rounded-full">Upgrade</button>
+                </div>
+
+                <!-- Elite Plan -->
+                <div class="plan-card glass-card rounded-xl p-4 border border-yellow-500/50 bg-yellow-500/10" onclick="selectPlan('elite')">
+                    <div class="flex justify-between items-center">
+                        <div>
+                            <p class="font-bold text-yellow-500">Elite 👑</p>
+                            <p class="text-xs text-gray-400">₹100-150 daily limit</p>
+                        </div>
+                        <div class="text-right">
+                            <p class="text-lg font-bold text-yellow-500">₹299</p>
+                            <p class="text-xs text-gray-500">/month</p>
+                        </div>
+                    </div>
                 </div>
             </div>
+
+            <button onclick="openSubscribeModal()" class="w-full mt-4 py-3 rounded-xl btn-primary text-white font-bold">
+                Upgrade Now
+            </button>
         </div>
 
-        <!-- Withdraw -->
-        <button onclick="withdraw()" class="w-full py-4 rounded-2xl bg-gradient-to-r from-green-500 to-emerald-600 text-white font-bold shadow-lg">
-            Withdraw (Min ₹100)
-        </button>
+        <!-- Withdraw Section -->
+        <div class="glass-card rounded-3xl p-6 mb-6">
+            <div class="flex justify-between items-center mb-4">
+                <h3 class="text-lg font-bold">Withdraw</h3>
+                <span class="text-xs text-gray-400">Min: ₹<span id="minWithdraw">100</span></span>
+            </div>
+            
+            <div class="grid grid-cols-3 gap-3 mb-4">
+                <div class="withdraw-method glass-card rounded-xl p-3 text-center" onclick="selectWithdraw('upi')">
+                    <i class="fas fa-mobile-alt text-2xl text-blue-400 mb-2"></i>
+                    <p class="text-xs">UPI</p>
+                </div>
+                <div class="withdraw-method glass-card rounded-xl p-3 text-center" onclick="selectWithdraw('bank')">
+                    <i class="fas fa-university text-2xl text-green-400 mb-2"></i>
+                    <p class="text-xs">Bank</p>
+                </div>
+                <div class="withdraw-method glass-card rounded-xl p-3 text-center" onclick="selectWithdraw('paytm')">
+                    <i class="fas fa-wallet text-2xl text-cyan-400 mb-2"></i>
+                    <p class="text-xs">PayTM</p>
+                </div>
+            </div>
+
+            <button onclick="openWithdrawModal()" class="w-full py-3 rounded-xl bg-gradient-to-r from-green-500 to-emerald-600 text-white font-bold shadow-lg disabled:opacity-50 disabled:cursor-not-allowed" id="withdrawBtn">
+                Withdraw Now
+            </button>
+        </div>
+
+        <!-- Recent Activity -->
+        <div class="glass-card rounded-3xl p-6">
+            <h3 class="text-lg font-bold mb-4">Recent Activity</h3>
+            <div id="activityList" class="space-y-3 max-h-48 overflow-y-auto">
+                <p class="text-center text-gray-500 text-sm py-4">No activity yet</p>
+            </div>
+        </div>
     </main>
 
+    <!-- Ad Modal -->
+    <div id="adModal" class="modal">
+        <div class="ad-container">
+            <h3 class="text-xl font-bold mb-2">Watch Ad & Earn</h3>
+            <p class="text-gray-400 text-sm mb-4">Watch this 30-second ad to earn ₹<span id="modalAdReward">5</span></p>
+            
+            <div class="glass-card rounded-xl p-4 mb-4">
+                <div class="text-6xl mb-4">📺</div>
+                <p class="text-sm text-gray-400 mb-2">Advertisement</p>
+                <div class="h-2 bg-gray-700 rounded-full overflow-hidden">
+                    <div id="adProgress" class="h-full bg-pink-500 transition-all duration-1000" style="width: 0%"></div>
+                </div>
+            </div>
+
+            <div class="timer-circle" id="adCountdown">30</div>
+            
+            <button onclick="closeAdModal()" class="w-full py-3 rounded-xl bg-gray-700 text-white font-semibold">
+                Skip (No Reward)
+            </button>
+        </div>
+    </div>
+
+    <!-- Subscribe Modal -->
+    <div id="subscribeModal" class="modal">
+        <div class="ad-container">
+            <h3 class="text-xl font-bold mb-2">Upgrade to <span id="selectedPlanName">Pro</span></h3>
+            <p class="text-gray-400 text-sm mb-4">Unlock higher daily limits and instant withdrawals</p>
+            
+            <div class="glass-card rounded-xl p-4 mb-4 text-left">
+                <div class="flex justify-between mb-2">
+                    <span>Plan:</span>
+                    <span class="font-bold" id="modalPlanName">Pro</span>
+                </div>
+                <div class="flex justify-between mb-2">
+                    <span>Price:</span>
+                    <span class="font-bold text-indigo-400">₹<span id="modalPlanPrice">99</span></span>
+                </div>
+                <div class="flex justify-between text-green-400">
+                    <span>Daily Limit:</span>
+                    <span class="font-bold">₹<span id="modalPlanLimit">40</span></span>
+                </div>
+            </div>
+
+            <div class="space-y-3 mb-4">
+                <input type="text" placeholder="Full Name" class="w-full px-4 py-3 rounded-xl bg-gray-800 border border-gray-700 text-white placeholder-gray-500">
+                <input type="tel" placeholder="Phone Number" class="w-full px-4 py-3 rounded-xl bg-gray-800 border border-gray-700 text-white placeholder-gray-500">
+                <input type="email" placeholder="Email" class="w-full px-4 py-3 rounded-xl bg-gray-800 border border-gray-700 text-white placeholder-gray-500">
+            </div>
+
+            <button onclick="processSubscription()" class="w-full py-3 rounded-xl btn-primary text-white font-bold mb-3">
+                Pay ₹<span id="payButtonAmount">99</span>
+            </button>
+            <button onclick="closeSubscribeModal()" class="w-full py-3 rounded-xl bg-gray-700 text-white font-semibold">
+                Cancel
+            </button>
+        </div>
+    </div>
+
+    <!-- Withdraw Modal -->
+    <div id="withdrawModal" class="modal">
+        <div class="ad-container">
+            <h3 class="text-xl font-bold mb-2">Withdraw Money</h3>
+            <p class="text-gray-400 text-sm mb-4">Available: ₹<span id="withdrawAvailable">0</span></p>
+            
+            <div class="glass-card rounded-xl p-4 mb-4">
+                <div class="flex justify-between items-center mb-3">
+                    <span>Method:</span>
+                    <span class="font-bold text-indigo-400 capitalize" id="withdrawMethodDisplay">UPI</span>
+                </div>
+                
+                <div id="upiFields">
+                    <input type="text" id="upiId" placeholder="UPI ID (e.g. name@upi)" class="w-full px-4 py-3 rounded-xl bg-gray-800 border border-gray-700 text-white placeholder-gray-500 mb-3">
+                </div>
+                
+                <div id="bankFields" class="hidden">
+                    <input type="text" placeholder="Account Number" class="w-full px-4 py-3 rounded-xl bg-gray-800 border border-gray-700 text-white placeholder-gray-500 mb-3">
+                    <input type="text" placeholder="IFSC Code" class="w-full px-4 py-3 rounded-xl bg-gray-800 border border-gray-700 text-white placeholder-gray-500 mb-3">
+                    <input type="text" placeholder="Account Holder Name" class="w-full px-4 py-3 rounded-xl bg-gray-800 border border-gray-700 text-white placeholder-gray-500">
+                </div>
+                
+                <div id="paytmFields" class="hidden">
+                    <input type="tel" placeholder="PayTM Number" class="w-full px-4 py-3 rounded-xl bg-gray-800 border border-gray-700 text-white placeholder-gray-500">
+                </div>
+
+                <input type="number" id="withdrawAmount" placeholder="Amount (Min ₹100)" class="w-full px-4 py-3 rounded-xl bg-gray-800 border border-gray-700 text-white placeholder-gray-500 mt-3">
+            </div>
+
+            <button onclick="processWithdrawal()" class="w-full py-3 rounded-xl bg-gradient-to-r from-green-500 to-emerald-600 text-white font-bold mb-3">
+                Withdraw Now
+            </button>
+            <button onclick="closeWithdrawModal()" class="w-full py-3 rounded-xl bg-gray-700 text-white font-semibold">
+                Cancel
+            </button>
+        </div>
+    </div>
+
     <script>
+        // State Management
         let state = {
             balance: 0,
-            total: 0,
-            today: 0,
+            totalEarnings: 0,
+            todayEarnings: 0,
             clicks: 0,
             streak: 0,
             level: 1,
-            xp: 0,
-            multiplier: 1,
-            nextReward: 0.5
+            plan: 'free',
+            dailyLimit: 8,
+            earnedToday: 0,
+            lastClick: 0,
+            lastAd: 0,
+            selectedWithdrawMethod: 'upi',
+            selectedPlan: 'pro'
         };
 
-        function handleClick() {
-            const reward = state.nextReward * state.multiplier;
-            state.balance += reward;
-            state.total += reward;
-            state.today += reward;
-            state.clicks++;
-            state.xp += 10;
-            
-            if (state.xp >= 100) {
-                state.level++;
-                state.xp = 0;
-                alert('🎉 Level Up! Level ' + state.level);
-            }
-            
-            state.nextReward = (Math.random() * 0.5 + 0.25).toFixed(2);
-            updateUI();
-        }
-
-        function updateUI() {
-            document.getElementById('balance').textContent = state.balance.toFixed(2);
-            document.getElementById('totalEarnings').textContent = state.total.toFixed(2);
-            document.getElementById('todayEarnings').textContent = state.today.toFixed(2);
-            document.getElementById('clicks').textContent = state.clicks;
-            document.getElementById('streak').textContent = state.streak;
-            document.getElementById('level').textContent = state.level;
-            document.getElementById('xp').textContent = state.xp;
-            document.getElementById('xpBar').style.width = state.xp + '%';
-            document.getElementById('nextReward').textContent = state.nextReward;
-        }
-
-        function upgrade(plan) {
-            if (plan === 'pro') {
-                state.multiplier = 2;
-                alert('Pro activated! 2x earnings!');
-            }
-        }
-
-        function withdraw() {
-            if (state.balance >= 100) {
-                alert('Withdrawal request: ₹' + state.balance.toFixed(2));
-                state.balance = 0;
-                updateUI();
-            } else {
-                alert('Minimum ₹100 required!');
-            }
-        }
-
-        // Timer
-        setInterval(() => {
-            const now = new Date();
-            const midnight = new Date();
-            midnight.setHours(24, 0, 0, 0);
-            const diff = midnight - now;
-            const hours = Math.floor(diff / 3600000);
-            const mins = Math.floor((diff % 3600000) / 60000);
-            document.getElementById('timer').textContent = 
-                `${hours.toString().padStart(2, '0')}:${mins.toString().padStart(2, '0')}`;
-        }, 1000);
-    </script>
-</body>
-  </html>
+        const plans = {
+            free: { name: 'Free', price: 0, limit: 8, minWithdraw: 100, clickReward: 0.5, adReward: 5           
