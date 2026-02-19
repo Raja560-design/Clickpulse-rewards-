@@ -3,70 +3,54 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>ClickPulse Pro - Earn Real Money</title>
+    <title>ClickPulse Pro</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
     <style>
-        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Space+Grotesk:wght@500;700&display=swap');
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap');
         
         * { margin: 0; padding: 0; box-sizing: border-box; }
         
         body {
             font-family: 'Inter', sans-serif;
-            background: #0a0a0f;
+            background: #0f0f1a;
             color: #ffffff;
             min-height: 100vh;
         }
         
-        .font-display { font-family: 'Space Grotesk', sans-serif; }
+        .glass {
+            background: rgba(255, 255, 255, 0.05);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
         
         .gradient-text {
-            background: linear-gradient(135deg, #818cf8 0%, #c084fc 50%, #f472b6 100%);
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
         }
         
-        .glass-card {
-            background: rgba(255, 255, 255, 0.03);
-            backdrop-filter: blur(20px);
-            border: 1px solid rgba(255, 255, 255, 0.08);
-        }
-        
         .btn-primary {
-            background: linear-gradient(135deg, #6366f1 0%, #8b5cf6 100%);
-            transition: all 0.3s ease;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            transition: all 0.3s;
         }
         
         .btn-primary:hover {
             transform: translateY(-2px);
-            box-shadow: 0 10px 40px -10px rgba(99, 102, 241, 0.5);
+            box-shadow: 0 10px 20px rgba(102, 126, 234, 0.4);
         }
         
-        .btn-gold {
-            background: linear-gradient(135deg, #fbbf24 0%, #f59e0b 100%);
-            color: #000;
-            font-weight: 700;
+        .btn-green {
+            background: linear-gradient(135deg, #11998e 0%, #38ef7d 100%);
         }
         
-        .click-pulse {
+        .pulse {
             animation: pulse 2s infinite;
         }
         
         @keyframes pulse {
-            0%, 100% { transform: scale(1); box-shadow: 0 0 0 0 rgba(99, 102, 241, 0.7); }
-            50% { transform: scale(1.05); box-shadow: 0 0 0 20px rgba(99, 102, 241, 0); }
-        }
-        
-        .progress-bar {
-            background: rgba(255, 255, 255, 0.1);
-            border-radius: 999px;
-            overflow: hidden;
-        }
-        
-        .progress-fill {
-            background: linear-gradient(90deg, #6366f1, #8b5cf6);
-            height: 100%;
-            transition: width 0.5s ease;
+            0%, 100% { box-shadow: 0 0 0 0 rgba(102, 126, 234, 0.7); }
+            50% { box-shadow: 0 0 0 20px rgba(102, 126, 234, 0); }
         }
         
         .modal {
@@ -76,35 +60,24 @@
             left: 0;
             width: 100%;
             height: 100%;
-            background: rgba(0,0,0,0.8);
+            background: rgba(0,0,0,0.9);
             z-index: 1000;
             justify-content: center;
             align-items: center;
             padding: 20px;
         }
         
-        .modal.active { display: flex; }
+        .modal.show { display: flex; }
         
-        .ad-container {
+        .modal-box {
             background: #1a1a2e;
             border-radius: 20px;
-            padding: 20px;
+            padding: 24px;
             max-width: 400px;
             width: 100%;
-            text-align: center;
-        }
-        
-        .timer-circle {
-            width: 80px;
-            height: 80px;
-            border-radius: 50%;
-            border: 4px solid #6366f1;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            margin: 20px auto;
-            font-size: 24px;
-            font-weight: bold;
+            max-height: 90vh;
+            overflow-y: auto;
+            border: 1px solid rgba(255,255,255,0.1);
         }
         
         .toast {
@@ -117,214 +90,256 @@
             font-weight: 600;
             z-index: 2000;
             transform: translateX(400px);
-            transition: transform 0.3s ease;
+            transition: transform 0.3s;
         }
         
         .toast.show { transform: translateX(0); }
-        .toast.success { background: linear-gradient(135deg, #10b981, #059669); }
-        .toast.error { background: linear-gradient(135deg, #ef4444, #dc2626); }
-        .toast.info { background: linear-gradient(135deg, #6366f1, #8b5cf6); }
-        
-        .plan-card {
-            transition: all 0.3s ease;
-            cursor: pointer;
-        }
-        
-        .plan-card:hover { transform: translateY(-5px); }
-        .plan-card.selected {
-            border: 2px solid #6366f1;
-            box-shadow: 0 0 30px rgba(99, 102, 241, 0.3);
-        }
-        
-        .withdraw-method {
-            transition: all 0.3s ease;
-            cursor: pointer;
-        }
-        
-        .withdraw-method:hover { background: rgba(255,255,255,0.05); }
-        .withdraw-method.selected {
-            border: 2px solid #10b981;
-            background: rgba(16, 185, 129, 0.1);
-        }
         
         .hidden { display: none !important; }
+        
+        input, select {
+            background: rgba(255,255,255,0.1);
+            border: 1px solid rgba(255,255,255,0.2);
+            color: white;
+            padding: 12px;
+            border-radius: 8px;
+            width: 100%;
+            margin-bottom: 12px;
+        }
+        
+        input:focus {
+            outline: none;
+            border-color: #667eea;
+        }
+        
+        .progress-bar {
+            height: 8px;
+            background: rgba(255,255,255,0.1);
+            border-radius: 4px;
+            overflow: hidden;
+        }
+        
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #667eea, #764ba2);
+            transition: width 0.3s;
+        }
+        
+        .tab-btn {
+            padding: 10px 20px;
+            border-radius: 8px;
+            transition: all 0.3s;
+        }
+        
+        .tab-btn.active {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        }
     </style>
 </head>
-<body>
-    <!-- Toast Notification -->
+<body class="pb-20">
+
+    <!-- Toast -->
     <div id="toast" class="toast"></div>
 
-    <!-- Navigation -->
-    <nav class="fixed w-full z-50 top-0 glass-card border-b border-white/5">
-        <div class="max-w-7xl mx-auto px-4 py-4 flex justify-between items-center">
-            <div class="flex items-center space-x-2">
-                <div class="w-10 h-10 rounded-xl bg-gradient-to-br from-indigo-500 to-purple-600 flex items-center justify-center">
+    <!-- Header -->
+    <header class="fixed top-0 w-full glass z-50 border-b border-white/10">
+        <div class="max-w-md mx-auto px-4 py-3 flex justify-between items-center">
+            <div class="flex items-center gap-2">
+                <div class="w-10 h-10 rounded-xl btn-primary flex items-center justify-center">
                     <i class="fas fa-bolt text-white"></i>
                 </div>
-                <span class="font-display text-2xl font-bold gradient-text">ClickPulse</span>
-                <span id="planBadge" class="px-2 py-0.5 rounded-full bg-gray-700 text-xs font-semibold">FREE</span>
+                <div>
+                    <h1 class="font-bold text-lg gradient-text">ClickPulse</h1>
+                    <span id="planBadge" class="text-xs bg-gray-700 px-2 py-0.5 rounded-full">FREE</span>
+                </div>
             </div>
-            <div class="flex items-center space-x-2 px-4 py-2 rounded-full glass-card">
-                <i class="fas fa-wallet text-indigo-400"></i>
-                <span class="font-mono font-bold text-lg">₹<span id="navBalance">0.00</span></span>
+            <div class="glass px-4 py-2 rounded-full flex items-center gap-2">
+                <i class="fas fa-wallet text-green-400"></i>
+                <span class="font-bold">₹<span id="headerBalance">0.00</span></span>
             </div>
         </div>
-    </nav>
+    </header>
 
-    <!-- Main Content -->
-    <main class="pt-24 pb-12 px-4 max-w-md mx-auto">
+    <!-- Main -->
+    <main class="max-w-md mx-auto px-4 pt-24">
         
         <!-- Balance Card -->
-        <div class="glass-card rounded-3xl p-6 mb-6 text-center relative overflow-hidden">
-            <div class="absolute top-0 right-0 w-32 h-32 bg-indigo-500/20 rounded-full blur-3xl -mr-16 -mt-16"></div>
+        <div class="glass rounded-2xl p-6 mb-6 text-center">
+            <p class="text-gray-400 text-sm mb-1">Total Earnings</p>
+            <h2 class="text-4xl font-bold gradient-text mb-2">₹<span id="totalEarnings">0.00</span></h2>
+            <p class="text-green-400 text-sm">+<span id="todayEarnings">0.00</span> today</p>
             
-            <p class="text-gray-400 text-sm mb-2">Total Earnings</p>
-            <h1 class="text-5xl font-display font-bold gradient-text mb-2">₹<span id="totalEarnings">0.00</span></h1>
-            <div class="flex justify-center items-center space-x-2 text-green-400 text-sm mb-4">
-                <i class="fas fa-arrow-up"></i>
-                <span>+₹<span id="todayEarnings">0.00</span> today</span>
-            </div>
-            
-            <!-- Daily Limit Progress -->
-            <div class="glass-card rounded-xl p-3">
+            <div class="mt-4 glass rounded-xl p-3">
                 <div class="flex justify-between text-xs mb-2">
                     <span class="text-gray-400">Daily Limit</span>
-                    <span class="text-indigo-400 font-semibold">₹<span id="earnedToday">0</span> / ₹<span id="dailyLimit">8</span></span>
+                    <span><span id="earnedToday">0</span> / <span id="dailyLimit">8</span></span>
                 </div>
-                <div class="progress-bar h-2">
-                    <div id="limitBar" class="progress-fill" style="width: 0%"></div>
+                <div class="progress-bar">
+                    <div id="limitProgress" class="progress-fill" style="width: 0%"></div>
                 </div>
             </div>
         </div>
 
-        <!-- Action Buttons -->
+        <!-- Action Grid -->
         <div class="grid grid-cols-2 gap-4 mb-6">
-            <!-- Click Button -->
-            <div class="glass-card rounded-3xl p-6 text-center">
-                <div class="text-4xl mb-3">👆</div>
-                <button onclick="handleClick()" id="clickBtn" class="click-pulse w-20 h-20 rounded-full btn-primary flex items-center justify-center text-2xl mx-auto mb-3 shadow-2xl active:scale-95 transition">
+            <!-- Click -->
+            <div class="glass rounded-2xl p-5 text-center">
+                <div class="text-3xl mb-2">👆</div>
+                <button id="clickBtn" onclick="handleClick()" class="w-16 h-16 rounded-full btn-primary pulse flex items-center justify-center text-xl mx-auto mb-2">
                     <i class="fas fa-hand-pointer"></i>
                 </button>
-                <p class="text-xs text-gray-400 mb-1">Click Reward</p>
-                <p class="text-lg font-bold text-green-400">₹<span id="clickReward">0.50</span></p>
-                <p class="text-xs text-gray-500 mt-1" id="clickTimer">Ready!</p>
+                <p class="text-xs text-gray-400">Click</p>
+                <p class="font-bold text-green-400">₹<span id="clickReward">0.50</span></p>
+                <p id="clickTimer" class="text-xs text-red-400 mt-1">Ready</p>
             </div>
 
-            <!-- Watch Ad Button -->
-            <div class="glass-card rounded-3xl p-6 text-center">
-                <div class="text-4xl mb-3">📺</div>
-                <button onclick="openAdModal()" id="adBtn" class="w-20 h-20 rounded-full bg-gradient-to-r from-pink-500 to-rose-600 flex items-center justify-center text-2xl mx-auto mb-3 shadow-2xl active:scale-95 transition">
+            <!-- Ad -->
+            <div class="glass rounded-2xl p-5 text-center">
+                <div class="text-3xl mb-2">📺</div>
+                <button onclick="openAdModal()" class="w-16 h-16 rounded-full bg-gradient-to-r from-pink-500 to-rose-500 flex items-center justify-center text-xl mx-auto mb-2">
                     <i class="fas fa-play"></i>
                 </button>
-                <p class="text-xs text-gray-400 mb-1">Watch Ad</p>
-                <p class="text-lg font-bold text-pink-400">₹<span id="adReward">5.00</span></p>
-                <p class="text-xs text-gray-500 mt-1" id="adTimer">Ready!</p>
+                <p class="text-xs text-gray-400">Watch Ad</p>
+                <p class="font-bold text-pink-400">₹<span id="adReward">5.00</span></p>
+                <p id="adTimer" class="text-xs text-red-400 mt-1">Ready</p>
             </div>
         </div>
 
         <!-- Stats -->
         <div class="grid grid-cols-3 gap-3 mb-6">
-            <div class="glass-card rounded-2xl p-4 text-center">
-                <div class="text-xl font-bold" id="totalClicks">0</div>
-                <div class="text-xs text-gray-400">Clicks</div>
+            <div class="glass rounded-xl p-3 text-center">
+                <p id="statClicks" class="text-xl font-bold">0</p>
+                <p class="text-xs text-gray-400">Clicks</p>
             </div>
-            <div class="glass-card rounded-2xl p-4 text-center">
-                <div class="text-xl font-bold text-orange-400" id="streakDays">0</div>
-                <div class="text-xs text-gray-400">Streak</div>
+            <div class="glass rounded-xl p-3 text-center">
+                <p id="statStreak" class="text-xl font-bold text-orange-400">0</p>
+                <p class="text-xs text-gray-400">Streak</p>
             </div>
-            <div class="glass-card rounded-2xl p-4 text-center">
-                <div class="text-xl font-bold text-pink-400" id="userLevel">1</div>
-                <div class="text-xs text-gray-400">Level</div>
+            <div class="glass rounded-xl p-3 text-center">
+                <p id="statLevel" class="text-xl font-bold text-yellow-400">1</p>
+                <p class="text-xs text-gray-400">Level</p>
             </div>
         </div>
 
-        <!-- Subscription Section -->
-        <div class="glass-card rounded-3xl p-6 mb-6">
-            <div class="flex justify-between items-center mb-4">
-                <h3 class="text-lg font-bold">Upgrade Plan</h3>
-                <span class="text-xs text-gray-400">Higher earnings!</span>
+        <!-- Referral Section -->
+        <div class="glass rounded-2xl p-5 mb-6 border border-green-500/30">
+            <div class="flex items-center justify-between mb-4">
+                <div class="flex items-center gap-3">
+                    <div class="w-12 h-12 rounded-full bg-gradient-to-r from-green-400 to-emerald-500 flex items-center justify-center">
+                        <i class="fas fa-users text-white"></i>
+                    </div>
+                    <div>
+                        <h3 class="font-bold">Refer & Earn</h3>
+                        <p class="text-xs text-gray-400">Invite friends, earn 10-25%</p>
+                    </div>
+                </div>
+                <div class="text-right">
+                    <p class="text-2xl font-bold text-green-400">₹<span id="refEarnings">0</span></p>
+                    <p class="text-xs text-gray-400">Earned</p>
+                </div>
             </div>
+
+            <div class="glass rounded-xl p-3 mb-3">
+                <div class="flex gap-2">
+                    <input type="text" id="refLink" readonly class="flex-1 text-xs mb-0" value="">
+                    <button onclick="copyRefLink()" class="btn-primary px-4 rounded-lg">
+                        <i class="fas fa-copy"></i>
+                    </button>
+                </div>
+            </div>
+
+            <div class="grid grid-cols-4 gap-2 mb-3">
+                <button onclick="share('whatsapp')" class="p-2 rounded-lg bg-green-500 text-white hover:opacity-80">
+                    <i class="fab fa-whatsapp"></i>
+                </button>
+                <button onclick="share('telegram')" class="p-2 rounded-lg bg-blue-500 text-white hover:opacity-80">
+                    <i class="fab fa-telegram"></i>
+                </button>
+                <button onclick="share('facebook')" class="p-2 rounded-lg bg-blue-600 text-white hover:opacity-80">
+                    <i class="fab fa-facebook-f"></i>
+                </button>
+                <button onclick="share('twitter')" class="p-2 rounded-lg bg-sky-500 text-white hover:opacity-80">
+                    <i class="fab fa-twitter"></i>
+                </button>
+            </div>
+
+            <button onclick="openRefModal()" class="w-full py-2 rounded-lg bg-gradient-to-r from-green-500 to-emerald-600 text-white font-semibold text-sm">
+                View Details
+            </button>
+        </div>
+
+        <!-- Subscription -->
+        <div class="glass rounded-2xl p-5 mb-6">
+            <h3 class="font-bold mb-3">Upgrade Plan</h3>
             
-            <div class="space-y-3" id="planContainer">
-                <!-- Free Plan -->
-                <div class="plan-card glass-card rounded-xl p-4 border border-white/10" onclick="selectPlan('free')">
-                    <div class="flex justify-between items-center">
+            <div class="space-y-2 mb-4">
+                <div onclick="selectPlan('free')" id="plan-free" class="plan-option glass rounded-xl p-3 cursor-pointer border-2 border-transparent hover:border-purple-500/50">
+                    <div class="flex justify-between">
                         <div>
-                            <p class="font-bold">Free</p>
-                            <p class="text-xs text-gray-400">₹5-8 daily limit</p>
+                            <p class="font-semibold">Free</p>
+                            <p class="text-xs text-gray-400">₹8/day limit • 10% ref</p>
                         </div>
-                        <div class="text-right">
-                            <p class="text-lg font-bold">₹0</p>
-                            <p class="text-xs text-gray-500">/month</p>
-                        </div>
+                        <p class="font-bold">₹0</p>
                     </div>
                 </div>
-
-                <!-- Pro Plan -->
-                <div class="plan-card glass-card rounded-xl p-4 border border-indigo-500/50 bg-indigo-500/10" onclick="selectPlan('pro')">
-                    <div class="flex justify-between items-center">
+                
+                <div onclick="selectPlan('pro')" id="plan-pro" class="plan-option glass rounded-xl p-3 cursor-pointer border-2 border-transparent hover:border-purple-500/50">
+                    <div class="flex justify-between">
                         <div>
-                            <p class="font-bold text-indigo-400">Pro ⭐</p>
-                            <p class="text-xs text-gray-400">₹25-40 daily limit</p>
+                            <p class="font-semibold text-purple-400">Pro ⭐</p>
+                            <p class="text-xs text-gray-400">₹40/day • 15% ref</p>
                         </div>
-                        <div class="text-right">
-                            <p class="text-lg font-bold text-indigo-400">₹99</p>
-                            <p class="text-xs text-gray-500">/month</p>
-                        </div>
+                        <p class="font-bold text-purple-400">₹99</p>
                     </div>
                 </div>
-
-                <!-- Elite Plan -->
-                <div class="plan-card glass-card rounded-xl p-4 border border-yellow-500/50 bg-yellow-500/10" onclick="selectPlan('elite')">
-                    <div class="flex justify-between items-center">
+                
+                <div onclick="selectPlan('elite')" id="plan-elite" class="plan-option glass rounded-xl p-3 cursor-pointer border-2 border-transparent hover:border-yellow-500/50">
+                    <div class="flex justify-between">
                         <div>
-                            <p class="font-bold text-yellow-500">Elite 👑</p>
-                            <p class="text-xs text-gray-400">₹100-150 daily limit</p>
+                            <p class="font-semibold text-yellow-400">Elite 👑</p>
+                            <p class="text-xs text-gray-400">₹150/day • 25% ref</p>
                         </div>
-                        <div class="text-right">
-                            <p class="text-lg font-bold text-yellow-500">₹299</p>
-                            <p class="text-xs text-gray-500">/month</p>
-                        </div>
+                        <p class="font-bold text-yellow-400">₹299</p>
                     </div>
                 </div>
             </div>
 
-            <button onclick="openSubscribeModal()" class="w-full mt-4 py-3 rounded-xl btn-primary text-white font-bold">
+            <button onclick="openSubModal()" class="w-full py-3 rounded-xl btn-primary text-white font-bold">
                 Upgrade Now
             </button>
         </div>
 
-        <!-- Withdraw Section -->
-        <div class="glass-card rounded-3xl p-6 mb-6">
-            <div class="flex justify-between items-center mb-4">
-                <h3 class="text-lg font-bold">Withdraw</h3>
+        <!-- Withdraw -->
+        <div class="glass rounded-2xl p-5 mb-6">
+            <div class="flex justify-between items-center mb-3">
+                <h3 class="font-bold">Withdraw</h3>
                 <span class="text-xs text-gray-400">Min: ₹<span id="minWithdraw">100</span></span>
             </div>
             
-            <div class="grid grid-cols-3 gap-3 mb-4">
-                <div class="withdraw-method glass-card rounded-xl p-3 text-center" onclick="selectWithdraw('upi')">
-                    <i class="fas fa-mobile-alt text-2xl text-blue-400 mb-2"></i>
+            <div class="grid grid-cols-3 gap-2 mb-3">
+                <button onclick="setWithdrawMethod('upi')" id="method-upi" class="method-btn glass rounded-lg p-2 text-center border-2 border-transparent">
+                    <i class="fas fa-mobile-alt text-blue-400 text-xl mb-1"></i>
                     <p class="text-xs">UPI</p>
-                </div>
-                <div class="withdraw-method glass-card rounded-xl p-3 text-center" onclick="selectWithdraw('bank')">
-                    <i class="fas fa-university text-2xl text-green-400 mb-2"></i>
+                </button>
+                <button onclick="setWithdrawMethod('bank')" id="method-bank" class="method-btn glass rounded-lg p-2 text-center border-2 border-transparent">
+                    <i class="fas fa-university text-green-400 text-xl mb-1"></i>
                     <p class="text-xs">Bank</p>
-                </div>
-                <div class="withdraw-method glass-card rounded-xl p-3 text-center" onclick="selectWithdraw('paytm')">
-                    <i class="fas fa-wallet text-2xl text-cyan-400 mb-2"></i>
+                </button>
+                <button onclick="setWithdrawMethod('paytm')" id="method-paytm" class="method-btn glass rounded-lg p-2 text-center border-2 border-transparent">
+                    <i class="fas fa-wallet text-cyan-400 text-xl mb-1"></i>
                     <p class="text-xs">PayTM</p>
-                </div>
+                </button>
             </div>
 
-            <button onclick="openWithdrawModal()" class="w-full py-3 rounded-xl bg-gradient-to-r from-green-500 to-emerald-600 text-white font-bold shadow-lg disabled:opacity-50 disabled:cursor-not-allowed" id="withdrawBtn">
+            <button onclick="openWithdrawModal()" id="withdrawBtn" class="w-full py-3 rounded-xl btn-green text-white font-bold disabled:opacity-50 disabled:cursor-not-allowed">
                 Withdraw Now
             </button>
         </div>
 
-        <!-- Recent Activity -->
-        <div class="glass-card rounded-3xl p-6">
-            <h3 class="text-lg font-bold mb-4">Recent Activity</h3>
-            <div id="activityList" class="space-y-3 max-h-48 overflow-y-auto">
+        <!-- Activity -->
+        <div class="glass rounded-2xl p-5">
+            <h3 class="font-bold mb-3">Recent Activity</h3>
+            <div id="activityList" class="space-y-2 max-h-48 overflow-y-auto">
                 <p class="text-center text-gray-500 text-sm py-4">No activity yet</p>
             </div>
         </div>
@@ -332,57 +347,53 @@
 
     <!-- Ad Modal -->
     <div id="adModal" class="modal">
-        <div class="ad-container">
-            <h3 class="text-xl font-bold mb-2">Watch Ad & Earn</h3>
-            <p class="text-gray-400 text-sm mb-4">Watch this 30-second ad to earn ₹<span id="modalAdReward">5</span></p>
+        <div class="modal-box text-center">
+            <h3 class="text-xl font-bold mb-2">Watch Advertisement</h3>
+            <p class="text-gray-400 text-sm mb-4">Watch to earn ₹<span id="adModalReward">5</span></p>
             
-            <div class="glass-card rounded-xl p-4 mb-4">
-                <div class="text-6xl mb-4">📺</div>
-                <p class="text-sm text-gray-400 mb-2">Advertisement</p>
-                <div class="h-2 bg-gray-700 rounded-full overflow-hidden">
-                    <div id="adProgress" class="h-full bg-pink-500 transition-all duration-1000" style="width: 0%"></div>
+            <div class="glass rounded-xl p-6 mb-4">
+                <div class="text-5xl mb-4">📺</div>
+                <div class="text-3xl font-bold mb-2" id="adCountdown">30</div>
+                <div class="progress-bar">
+                    <div id="adProgress" class="progress-fill" style="width: 0%"></div>
                 </div>
             </div>
-
-            <div class="timer-circle" id="adCountdown">30</div>
             
-            <button onclick="closeAdModal()" class="w-full py-3 rounded-xl bg-gray-700 text-white font-semibold">
+            <button onclick="closeAdModal()" class="w-full py-2 rounded-lg bg-gray-700 text-white">
                 Skip (No Reward)
             </button>
         </div>
     </div>
 
     <!-- Subscribe Modal -->
-    <div id="subscribeModal" class="modal">
-        <div class="ad-container">
-            <h3 class="text-xl font-bold mb-2">Upgrade to <span id="selectedPlanName">Pro</span></h3>
-            <p class="text-gray-400 text-sm mb-4">Unlock higher daily limits and instant withdrawals</p>
+    <div id="subModal" class="modal">
+        <div class="modal-box">
+            <h3 class="text-xl font-bold mb-1">Upgrade to <span id="subPlanName">Pro</span></h3>
+            <p class="text-gray-400 text-sm mb-4">Unlock higher earnings</p>
             
-            <div class="glass-card rounded-xl p-4 mb-4 text-left">
-                <div class="flex justify-between mb-2">
-                    <span>Plan:</span>
-                    <span class="font-bold" id="modalPlanName">Pro</span>
-                </div>
-                <div class="flex justify-between mb-2">
+            <div class="glass rounded-xl p-4 mb-4 space-y-2">
+                <div class="flex justify-between">
                     <span>Price:</span>
-                    <span class="font-bold text-indigo-400">₹<span id="modalPlanPrice">99</span></span>
+                    <span class="font-bold">₹<span id="subPlanPrice">99</span></span>
                 </div>
-                <div class="flex justify-between text-green-400">
+                <div class="flex justify-between">
                     <span>Daily Limit:</span>
-                    <span class="font-bold">₹<span id="modalPlanLimit">40</span></span>
+                    <span class="font-bold text-green-400">₹<span id="subPlanLimit">40</span></span>
+                </div>
+                <div class="flex justify-between">
+                    <span>Referral:</span>
+                    <span class="font-bold text-yellow-400"><span id="subPlanRef">15</span>%</span>
                 </div>
             </div>
 
-            <div class="space-y-3 mb-4">
-                <input type="text" placeholder="Full Name" class="w-full px-4 py-3 rounded-xl bg-gray-800 border border-gray-700 text-white placeholder-gray-500">
-                <input type="tel" placeholder="Phone Number" class="w-full px-4 py-3 rounded-xl bg-gray-800 border border-gray-700 text-white placeholder-gray-500">
-                <input type="email" placeholder="Email" class="w-full px-4 py-3 rounded-xl bg-gray-800 border border-gray-700 text-white placeholder-gray-500">
-            </div>
+            <input type="text" id="subName" placeholder="Full Name">
+            <input type="tel" id="subPhone" placeholder="Phone Number">
+            <input type="email" id="subEmail" placeholder="Email">
 
-            <button onclick="processSubscription()" class="w-full py-3 rounded-xl btn-primary text-white font-bold mb-3">
-                Pay ₹<span id="payButtonAmount">99</span>
+            <button onclick="processSubscribe()" class="w-full py-3 rounded-xl btn-primary text-white font-bold mb-2">
+                Pay ₹<span id="subPayBtn">99</span>
             </button>
-            <button onclick="closeSubscribeModal()" class="w-full py-3 rounded-xl bg-gray-700 text-white font-semibold">
+            <button onclick="closeSubModal()" class="w-full py-2 rounded-lg bg-gray-700 text-white">
                 Cancel
             </button>
         </div>
@@ -390,59 +401,62 @@
 
     <!-- Withdraw Modal -->
     <div id="withdrawModal" class="modal">
-        <div class="ad-container">
-            <h3 class="text-xl font-bold mb-2">Withdraw Money</h3>
-            <p class="text-gray-400 text-sm mb-4">Available: ₹<span id="withdrawAvailable">0</span></p>
+        <div class="modal-box">
+            <h3 class="text-xl font-bold mb-1">Withdraw Money</h3>
+            <p class="text-gray-400 text-sm mb-4">Available: ₹<span id="withdrawAvail">0</span></p>
             
-            <div class="glass-card rounded-xl p-4 mb-4">
-                <div class="flex justify-between items-center mb-3">
-                    <span>Method:</span>
-                    <span class="font-bold text-indigo-400 capitalize" id="withdrawMethodDisplay">UPI</span>
-                </div>
-                
-                <div id="upiFields">
-                    <input type="text" id="upiId" placeholder="UPI ID (e.g. name@upi)" class="w-full px-4 py-3 rounded-xl bg-gray-800 border border-gray-700 text-white placeholder-gray-500 mb-3">
-                </div>
-                
-                <div id="bankFields" class="hidden">
-                    <input type="text" placeholder="Account Number" class="w-full px-4 py-3 rounded-xl bg-gray-800 border border-gray-700 text-white placeholder-gray-500 mb-3">
-                    <input type="text" placeholder="IFSC Code" class="w-full px-4 py-3 rounded-xl bg-gray-800 border border-gray-700 text-white placeholder-gray-500 mb-3">
-                    <input type="text" placeholder="Account Holder Name" class="w-full px-4 py-3 rounded-xl bg-gray-800 border border-gray-700 text-white placeholder-gray-500">
-                </div>
-                
-                <div id="paytmFields" class="hidden">
-                    <input type="tel" placeholder="PayTM Number" class="w-full px-4 py-3 rounded-xl bg-gray-800 border border-gray-700 text-white placeholder-gray-500">
-                </div>
-
-                <input type="number" id="withdrawAmount" placeholder="Amount (Min ₹100)" class="w-full px-4 py-3 rounded-xl bg-gray-800 border border-gray-700 text-white placeholder-gray-500 mt-3">
+            <div id="withdraw-upi" class="withdraw-fields">
+                <input type="text" id="upiId" placeholder="UPI ID (name@upi)">
+            </div>
+            
+            <div id="withdraw-bank" class="withdraw-fields hidden">
+                <input type="text" placeholder="Account Number">
+                <input type="text" placeholder="IFSC Code">
+                <input type="text" placeholder="Account Holder Name">
+            </div>
+            
+            <div id="withdraw-paytm" class="withdraw-fields hidden">
+                <input type="tel" placeholder="PayTM Number">
             </div>
 
-            <button onclick="processWithdrawal()" class="w-full py-3 rounded-xl bg-gradient-to-r from-green-500 to-emerald-600 text-white font-bold mb-3">
+            <input type="number" id="withdrawAmount" placeholder="Amount (Min ₹100)">
+
+            <button onclick="processWithdraw()" class="w-full py-3 rounded-xl btn-green text-white font-bold mb-2">
                 Withdraw Now
             </button>
-            <button onclick="closeWithdrawModal()" class="w-full py-3 rounded-xl bg-gray-700 text-white font-semibold">
+            <button onclick="closeWithdrawModal()" class="w-full py-2 rounded-lg bg-gray-700 text-white">
                 Cancel
             </button>
         </div>
     </div>
 
-    <script>
-        // State Management
-        let state = {
-            balance: 0,
-            totalEarnings: 0,
-            todayEarnings: 0,
-            clicks: 0,
-            streak: 0,
-            level: 1,
-            plan: 'free',
-            dailyLimit: 8,
-            earnedToday: 0,
-            lastClick: 0,
-            lastAd: 0,
-            selectedWithdrawMethod: 'upi',
-            selectedPlan: 'pro'
-        };
+    <!-- Referral Modal -->
+    <div id="refModal" class="modal">
+        <div class="modal-box">
+            <div class="flex justify-between items-center mb-4">
+                <h3 class="text-xl font-bold">Referral Program</h3>
+                <button onclick="closeRefModal()" class="w-8 h-8 rounded-full bg-gray-700 flex items-center justify-center">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
 
-        const plans = {
-            free: { name: 'Free', price: 0, limit: 8, minWithdraw: 100, clickReward: 0.5, adReward: 5           
+            <div class="flex gap-2 mb-4">
+                <button onclick="switchRefTab('stats')" id="refTab-stats" class="tab-btn active flex-1 text-sm">Stats</button>
+                <button onclick="switchRefTab('friends')" id="refTab-friends" class="tab-btn flex-1 text-sm bg-gray-700">Friends</button>
+                <button onclick="switchRefTab('rewards')" id="refTab-rewards" class="tab-btn flex-1 text-sm bg-gray-700">Rewards</button>
+            </div>
+
+            <!-- Stats Tab -->
+            <div id="refContent-stats">
+                <div class="glass rounded-xl p-4 text-center mb-3">
+                    <p class="text-3xl font-bold text-green-400 mb-1">₹<span id="modalRefEarnings">0</span></p>
+                    <p class="text-sm text-gray-400">Total Referral Earnings</p>
+                </div>
+                <div class="grid grid-cols-2 gap-3">
+                    <div class="glass rounded-xl p-3 text-center">
+                        <p class="text-2xl font-bold text-purple-400" id="modalTotalRefs">0</p>
+                        <p class="text-xs text-gray-400">Total Invited</p>
+                    </div>
+                    <div class="glass rounded-xl p-3 text-center">
+                        <p class="text-2xl font-bold text-yellow-400" id="modalActiveRefs">0</p>
+                        <p cla
