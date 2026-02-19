@@ -5,54 +5,53 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>ClickPulse Pro</title>
     <script src="https://cdn.tailwindcss.com"></script>
-    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
-        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap');
-        
-        * { margin: 0; padding: 0; box-sizing: border-box; }
-        
         body {
-            font-family: 'Inter', sans-serif;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
             background: #0f0f1a;
-            color: #ffffff;
-            min-height: 100vh;
+            color: white;
+            margin: 0;
+            padding: 0;
         }
-        
-        .glass {
-            background: rgba(255, 255, 255, 0.05);
-            backdrop-filter: blur(10px);
-            border: 1px solid rgba(255, 255, 255, 0.1);
+        .card {
+            background: rgba(255,255,255,0.05);
+            border: 1px solid rgba(255,255,255,0.1);
+            border-radius: 16px;
+            padding: 20px;
+            margin-bottom: 16px;
         }
-        
-        .gradient-text {
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-        }
-        
-        .btn-primary {
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        .btn {
+            border: none;
+            padding: 12px 24px;
+            border-radius: 12px;
+            cursor: pointer;
+            font-weight: bold;
             transition: all 0.3s;
+            width: 100%;
         }
-        
-        .btn-primary:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 10px 20px rgba(102, 126, 234, 0.4);
+        .btn:active {
+            transform: scale(0.95);
         }
-        
+        .btn-purple {
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            color: white;
+        }
         .btn-green {
-            background: linear-gradient(135deg, #11998e 0%, #38ef7d 100%);
+            background: linear-gradient(135deg, #11998e, #38ef7d);
+            color: white;
         }
-        
+        .btn-pink {
+            background: linear-gradient(135deg, #ec4899, #f43f5e);
+            color: white;
+        }
         .pulse {
             animation: pulse 2s infinite;
         }
-        
         @keyframes pulse {
             0%, 100% { box-shadow: 0 0 0 0 rgba(102, 126, 234, 0.7); }
-            50% { box-shadow: 0 0 0 20px rgba(102, 126, 234, 0); }
+            50% { box-shadow: 0 0 0 15px rgba(102, 126, 234, 0); }
         }
-        
         .modal {
             display: none;
             position: fixed;
@@ -66,397 +65,749 @@
             align-items: center;
             padding: 20px;
         }
-        
-        .modal.show { display: flex; }
-        
+        .modal.active {
+            display: flex;
+        }
         .modal-box {
             background: #1a1a2e;
             border-radius: 20px;
             padding: 24px;
-            max-width: 400px;
             width: 100%;
+            max-width: 400px;
             max-height: 90vh;
             overflow-y: auto;
-            border: 1px solid rgba(255,255,255,0.1);
         }
-        
-        .toast {
-            position: fixed;
-            top: 100px;
-            right: 20px;
-            padding: 16px 24px;
-            border-radius: 12px;
-            color: white;
-            font-weight: 600;
-            z-index: 2000;
-            transform: translateX(400px);
-            transition: transform 0.3s;
-        }
-        
-        .toast.show { transform: translateX(0); }
-        
         .hidden { display: none !important; }
-        
-        input, select {
-            background: rgba(255,255,255,0.1);
-            border: 1px solid rgba(255,255,255,0.2);
-            color: white;
-            padding: 12px;
-            border-radius: 8px;
+        input {
             width: 100%;
+            padding: 12px;
             margin-bottom: 12px;
-        }
-        
-        input:focus {
-            outline: none;
-            border-color: #667eea;
-        }
-        
-        .progress-bar {
-            height: 8px;
-            background: rgba(255,255,255,0.1);
-            border-radius: 4px;
-            overflow: hidden;
-        }
-        
-        .progress-fill {
-            height: 100%;
-            background: linear-gradient(90deg, #667eea, #764ba2);
-            transition: width 0.3s;
-        }
-        
-        .tab-btn {
-            padding: 10px 20px;
             border-radius: 8px;
-            transition: all 0.3s;
+            border: 1px solid rgba(255,255,255,0.2);
+            background: rgba(255,255,255,0.1);
+            color: white;
+            box-sizing: border-box;
         }
-        
-        .tab-btn.active {
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        .share-btn {
+            padding: 12px;
+            border-radius: 12px;
+            border: none;
+            color: white;
+            cursor: pointer;
         }
+        .wa { background: #25d366; }
+        .tg { background: #0088cc; }
+        .fb { background: #1877f2; }
+        .tw { background: #1da1f2; }
     </style>
 </head>
-<body class="pb-20">
-
-    <!-- Toast -->
-    <div id="toast" class="toast"></div>
+<body style="padding-bottom: 40px;">
 
     <!-- Header -->
-    <header class="fixed top-0 w-full glass z-50 border-b border-white/10">
-        <div class="max-w-md mx-auto px-4 py-3 flex justify-between items-center">
-            <div class="flex items-center gap-2">
-                <div class="w-10 h-10 rounded-xl btn-primary flex items-center justify-center">
-                    <i class="fas fa-bolt text-white"></i>
+    <div style="position: fixed; top: 0; width: 100%; background: rgba(15,15,26,0.95); border-bottom: 1px solid rgba(255,255,255,0.1); z-index: 100;">
+        <div style="max-width: 500px; margin: 0 auto; padding: 16px; display: flex; justify-content: space-between; align-items: center;">
+            <div style="display: flex; align-items: center; gap: 12px;">
+                <div style="width: 40px; height: 40px; background: linear-gradient(135deg, #667eea, #764ba2); border-radius: 10px; display: flex; align-items: center; justify-content: center;">
+                    <i class="fas fa-bolt" style="color: white;"></i>
                 </div>
                 <div>
-                    <h1 class="font-bold text-lg gradient-text">ClickPulse</h1>
-                    <span id="planBadge" class="text-xs bg-gray-700 px-2 py-0.5 rounded-full">FREE</span>
+                    <div style="font-weight: bold; font-size: 18px; background: linear-gradient(135deg, #667eea, #764ba2); -webkit-background-clip: text; -webkit-text-fill-color: transparent;">ClickPulse</div>
+                    <span id="userPlan" style="font-size: 11px; background: #374151; padding: 2px 8px; border-radius: 10px;">FREE</span>
                 </div>
             </div>
-            <div class="glass px-4 py-2 rounded-full flex items-center gap-2">
-                <i class="fas fa-wallet text-green-400"></i>
-                <span class="font-bold">₹<span id="headerBalance">0.00</span></span>
+            <div style="background: rgba(255,255,255,0.05); padding: 8px 16px; border-radius: 20px; display: flex; align-items: center; gap: 8px;">
+                <i class="fas fa-wallet" style="color: #10b981;"></i>
+                <span style="font-weight: bold;">₹<span id="headerBal">0.00</span></span>
             </div>
         </div>
-    </header>
+    </div>
 
-    <!-- Main -->
-    <main class="max-w-md mx-auto px-4 pt-24">
-        
-        <!-- Balance Card -->
-        <div class="glass rounded-2xl p-6 mb-6 text-center">
-            <p class="text-gray-400 text-sm mb-1">Total Earnings</p>
-            <h2 class="text-4xl font-bold gradient-text mb-2">₹<span id="totalEarnings">0.00</span></h2>
-            <p class="text-green-400 text-sm">+<span id="todayEarnings">0.00</span> today</p>
+    <!-- Main Content -->
+    <div style="max-width: 500px; margin: 0 auto; padding: 100px 16px 20px;">
+
+        <!-- Balance -->
+        <div class="card" style="text-align: center;">
+            <p style="color: #9ca3af; margin-bottom: 8px;">Total Earnings</p>
+            <h1 style="font-size: 48px; margin: 0; background: linear-gradient(135deg, #667eea, #764ba2); -webkit-background-clip: text; -webkit-text-fill-color: transparent;">₹<span id="totalBal">0.00</span></h1>
+            <p style="color: #10b981; margin-top: 8px;">+<span id="todayBal">0.00</span> today</p>
             
-            <div class="mt-4 glass rounded-xl p-3">
-                <div class="flex justify-between text-xs mb-2">
-                    <span class="text-gray-400">Daily Limit</span>
-                    <span><span id="earnedToday">0</span> / <span id="dailyLimit">8</span></span>
+            <div class="card" style="margin-top: 16px; margin-bottom: 0;">
+                <div style="display: flex; justify-content: space-between; font-size: 12px; margin-bottom: 8px;">
+                    <span style="color: #9ca3af;">Daily Limit</span>
+                    <span>₹<span id="usedLimit">0</span> / ₹<span id="maxLimit">8</span></span>
                 </div>
-                <div class="progress-bar">
-                    <div id="limitProgress" class="progress-fill" style="width: 0%"></div>
+                <div style="height: 8px; background: rgba(255,255,255,0.1); border-radius: 4px; overflow: hidden;">
+                    <div id="limitBar" style="height: 100%; width: 0%; background: linear-gradient(90deg, #667eea, #764ba2); transition: width 0.3s;"></div>
                 </div>
             </div>
         </div>
 
-        <!-- Action Grid -->
-        <div class="grid grid-cols-2 gap-4 mb-6">
-            <!-- Click -->
-            <div class="glass rounded-2xl p-5 text-center">
-                <div class="text-3xl mb-2">👆</div>
-                <button id="clickBtn" onclick="handleClick()" class="w-16 h-16 rounded-full btn-primary pulse flex items-center justify-center text-xl mx-auto mb-2">
+        <!-- Actions -->
+        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-bottom: 16px;">
+            <div class="card" style="text-align: center;">
+                <div style="font-size: 32px; margin-bottom: 8px;">👆</div>
+                <button id="clickBtn" class="btn btn-purple pulse" style="width: 80px; height: 80px; border-radius: 50%; margin: 0 auto 12px; display: flex; align-items: center; justify-content: center; font-size: 24px;">
                     <i class="fas fa-hand-pointer"></i>
                 </button>
-                <p class="text-xs text-gray-400">Click</p>
-                <p class="font-bold text-green-400">₹<span id="clickReward">0.50</span></p>
-                <p id="clickTimer" class="text-xs text-red-400 mt-1">Ready</p>
+                <p style="color: #9ca3af; font-size: 12px; margin-bottom: 4px;">Click</p>
+                <p style="color: #10b981; font-weight: bold; font-size: 18px;">₹<span id="clickVal">0.50</span></p>
+                <p id="clickStatus" style="color: #ef4444; font-size: 11px; margin-top: 4px;">Ready</p>
             </div>
 
-            <!-- Ad -->
-            <div class="glass rounded-2xl p-5 text-center">
-                <div class="text-3xl mb-2">📺</div>
-                <button onclick="openAdModal()" class="w-16 h-16 rounded-full bg-gradient-to-r from-pink-500 to-rose-500 flex items-center justify-center text-xl mx-auto mb-2">
+            <div class="card" style="text-align: center;">
+                <div style="font-size: 32px; margin-bottom: 8px;">📺</div>
+                <button id="adBtn" class="btn btn-pink" style="width: 80px; height: 80px; border-radius: 50%; margin: 0 auto 12px; display: flex; align-items: center; justify-content: center; font-size: 24px;">
                     <i class="fas fa-play"></i>
                 </button>
-                <p class="text-xs text-gray-400">Watch Ad</p>
-                <p class="font-bold text-pink-400">₹<span id="adReward">5.00</span></p>
-                <p id="adTimer" class="text-xs text-red-400 mt-1">Ready</p>
+                <p style="color: #9ca3af; font-size: 12px; margin-bottom: 4px;">Watch Ad</p>
+                <p style="color: #ec4899; font-weight: bold; font-size: 18px;">₹<span id="adVal">5.00</span></p>
+                <p id="adStatus" style="color: #ef4444; font-size: 11px; margin-top: 4px;">Ready</p>
             </div>
         </div>
 
         <!-- Stats -->
-        <div class="grid grid-cols-3 gap-3 mb-6">
-            <div class="glass rounded-xl p-3 text-center">
-                <p id="statClicks" class="text-xl font-bold">0</p>
-                <p class="text-xs text-gray-400">Clicks</p>
+        <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; margin-bottom: 16px;">
+            <div class="card" style="text-align: center; padding: 16px;">
+                <p id="statClick" style="font-size: 24px; font-weight: bold; margin: 0;">0</p>
+                <p style="color: #9ca3af; font-size: 11px; margin: 4px 0 0;">Clicks</p>
             </div>
-            <div class="glass rounded-xl p-3 text-center">
-                <p id="statStreak" class="text-xl font-bold text-orange-400">0</p>
-                <p class="text-xs text-gray-400">Streak</p>
+            <div class="card" style="text-align: center; padding: 16px;">
+                <p id="statStreak" style="font-size: 24px; font-weight: bold; margin: 0; color: #f97316;">0</p>
+                <p style="color: #9ca3af; font-size: 11px; margin: 4px 0 0;">Streak</p>
             </div>
-            <div class="glass rounded-xl p-3 text-center">
-                <p id="statLevel" class="text-xl font-bold text-yellow-400">1</p>
-                <p class="text-xs text-gray-400">Level</p>
+            <div class="card" style="text-align: center; padding: 16px;">
+                <p id="statLevel" style="font-size: 24px; font-weight: bold; margin: 0; color: #eab308;">1</p>
+                <p style="color: #9ca3af; font-size: 11px; margin: 4px 0 0;">Level</p>
             </div>
         </div>
 
-        <!-- Referral Section -->
-        <div class="glass rounded-2xl p-5 mb-6 border border-green-500/30">
-            <div class="flex items-center justify-between mb-4">
-                <div class="flex items-center gap-3">
-                    <div class="w-12 h-12 rounded-full bg-gradient-to-r from-green-400 to-emerald-500 flex items-center justify-center">
-                        <i class="fas fa-users text-white"></i>
+        <!-- Referral -->
+        <div class="card" style="border: 1px solid rgba(16, 185, 129, 0.3);">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px;">
+                <div style="display: flex; align-items: center; gap: 12px;">
+                    <div style="width: 48px; height: 48px; background: linear-gradient(135deg, #10b981, #059669); border-radius: 50%; display: flex; align-items: center; justify-content: center;">
+                        <i class="fas fa-users" style="color: white; font-size: 20px;"></i>
                     </div>
                     <div>
-                        <h3 class="font-bold">Refer & Earn</h3>
-                        <p class="text-xs text-gray-400">Invite friends, earn 10-25%</p>
+                        <h3 style="margin: 0;">Refer & Earn</h3>
+                        <p style="color: #9ca3af; font-size: 12px; margin: 4px 0 0;">10-25% commission</p>
                     </div>
                 </div>
-                <div class="text-right">
-                    <p class="text-2xl font-bold text-green-400">₹<span id="refEarnings">0</span></p>
-                    <p class="text-xs text-gray-400">Earned</p>
+                <div style="text-align: right;">
+                    <p style="font-size: 24px; font-weight: bold; color: #10b981; margin: 0;">₹<span id="refEarn">0</span></p>
+                    <p style="color: #9ca3af; font-size: 11px; margin: 0;">Earned</p>
                 </div>
             </div>
 
-            <div class="glass rounded-xl p-3 mb-3">
-                <div class="flex gap-2">
-                    <input type="text" id="refLink" readonly class="flex-1 text-xs mb-0" value="">
-                    <button onclick="copyRefLink()" class="btn-primary px-4 rounded-lg">
-                        <i class="fas fa-copy"></i>
-                    </button>
-                </div>
-            </div>
-
-            <div class="grid grid-cols-4 gap-2 mb-3">
-                <button onclick="share('whatsapp')" class="p-2 rounded-lg bg-green-500 text-white hover:opacity-80">
-                    <i class="fab fa-whatsapp"></i>
-                </button>
-                <button onclick="share('telegram')" class="p-2 rounded-lg bg-blue-500 text-white hover:opacity-80">
-                    <i class="fab fa-telegram"></i>
-                </button>
-                <button onclick="share('facebook')" class="p-2 rounded-lg bg-blue-600 text-white hover:opacity-80">
-                    <i class="fab fa-facebook-f"></i>
-                </button>
-                <button onclick="share('twitter')" class="p-2 rounded-lg bg-sky-500 text-white hover:opacity-80">
-                    <i class="fab fa-twitter"></i>
+            <div class="card" style="display: flex; gap: 8px; padding: 12px;">
+                <input type="text" id="refLinkInput" readonly style="margin: 0; flex: 1; font-size: 11px;" value="">
+                <button id="copyBtn" class="btn btn-purple" style="width: auto; padding: 12px 16px;">
+                    <i class="fas fa-copy"></i>
                 </button>
             </div>
 
-            <button onclick="openRefModal()" class="w-full py-2 rounded-lg bg-gradient-to-r from-green-500 to-emerald-600 text-white font-semibold text-sm">
-                View Details
-            </button>
+            <div style="display: grid; grid-template-columns: repeat(4, 1fr); gap: 8px; margin-bottom: 12px;">
+                <button id="shareWa" class="share-btn wa"><i class="fab fa-whatsapp"></i></button>
+                <button id="shareTg" class="share-btn tg"><i class="fab fa-telegram"></i></button>
+                <button id="shareFb" class="share-btn fb"><i class="fab fa-facebook-f"></i></button>
+                <button id="shareTw" class="share-btn tw"><i class="fab fa-twitter"></i></button>
+            </div>
+
+            <button id="refDetailsBtn" class="btn btn-green">View Details</button>
         </div>
 
         <!-- Subscription -->
-        <div class="glass rounded-2xl p-5 mb-6">
-            <h3 class="font-bold mb-3">Upgrade Plan</h3>
+        <div class="card">
+            <h3 style="margin: 0 0 16px;">Upgrade Plan</h3>
             
-            <div class="space-y-2 mb-4">
-                <div onclick="selectPlan('free')" id="plan-free" class="plan-option glass rounded-xl p-3 cursor-pointer border-2 border-transparent hover:border-purple-500/50">
-                    <div class="flex justify-between">
-                        <div>
-                            <p class="font-semibold">Free</p>
-                            <p class="text-xs text-gray-400">₹8/day limit • 10% ref</p>
-                        </div>
-                        <p class="font-bold">₹0</p>
+            <div id="plan-free" class="card plan-option" style="cursor: pointer; margin-bottom: 12px; padding: 16px;">
+                <div style="display: flex; justify-content: space-between; align-items: center;">
+                    <div>
+                        <p style="font-weight: bold; margin: 0;">Free</p>
+                        <p style="color: #9ca3af; font-size: 12px; margin: 4px 0 0;">₹8/day • 10% ref</p>
                     </div>
-                </div>
-                
-                <div onclick="selectPlan('pro')" id="plan-pro" class="plan-option glass rounded-xl p-3 cursor-pointer border-2 border-transparent hover:border-purple-500/50">
-                    <div class="flex justify-between">
-                        <div>
-                            <p class="font-semibold text-purple-400">Pro ⭐</p>
-                            <p class="text-xs text-gray-400">₹40/day • 15% ref</p>
-                        </div>
-                        <p class="font-bold text-purple-400">₹99</p>
-                    </div>
-                </div>
-                
-                <div onclick="selectPlan('elite')" id="plan-elite" class="plan-option glass rounded-xl p-3 cursor-pointer border-2 border-transparent hover:border-yellow-500/50">
-                    <div class="flex justify-between">
-                        <div>
-                            <p class="font-semibold text-yellow-400">Elite 👑</p>
-                            <p class="text-xs text-gray-400">₹150/day • 25% ref</p>
-                        </div>
-                        <p class="font-bold text-yellow-400">₹299</p>
-                    </div>
+                    <p style="font-weight: bold; margin: 0;">₹0</p>
                 </div>
             </div>
 
-            <button onclick="openSubModal()" class="w-full py-3 rounded-xl btn-primary text-white font-bold">
-                Upgrade Now
-            </button>
+            <div id="plan-pro" class="card plan-option" style="cursor: pointer; margin-bottom: 12px; padding: 16px;">
+                <div style="display: flex; justify-content: space-between; align-items: center;">
+                    <div>
+                        <p style="font-weight: bold; margin: 0; color: #a78bfa;">Pro ⭐</p>
+                        <p style="color: #9ca3af; font-size: 12px; margin: 4px 0 0;">₹40/day • 15% ref</p>
+                    </div>
+                    <p style="font-weight: bold; margin: 0; color: #a78bfa;">₹99</p>
+                </div>
+            </div>
+
+            <div id="plan-elite" class="card plan-option" style="cursor: pointer; margin-bottom: 16px; padding: 16px;">
+                <div style="display: flex; justify-content: space-between; align-items: center;">
+                    <div>
+                        <p style="font-weight: bold; margin: 0; color: #eab308;">Elite 👑</p>
+                        <p style="color: #9ca3af; font-size: 12px; margin: 4px 0 0;">₹150/day • 25% ref</p>
+                    </div>
+                    <p style="font-weight: bold; margin: 0; color: #eab308;">₹299</p>
+                </div>
+            </div>
+
+            <button id="upgradeBtn" class="btn btn-purple" style="padding: 16px; font-size: 16px;">Upgrade Now</button>
         </div>
 
         <!-- Withdraw -->
-        <div class="glass rounded-2xl p-5 mb-6">
-            <div class="flex justify-between items-center mb-3">
-                <h3 class="font-bold">Withdraw</h3>
-                <span class="text-xs text-gray-400">Min: ₹<span id="minWithdraw">100</span></span>
+        <div class="card">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px;">
+                <h3 style="margin: 0;">Withdraw</h3>
+                <span style="color: #9ca3af; font-size: 12px;">Min: ₹<span id="minWith">100</span></span>
             </div>
-            
-            <div class="grid grid-cols-3 gap-2 mb-3">
-                <button onclick="setWithdrawMethod('upi')" id="method-upi" class="method-btn glass rounded-lg p-2 text-center border-2 border-transparent">
-                    <i class="fas fa-mobile-alt text-blue-400 text-xl mb-1"></i>
-                    <p class="text-xs">UPI</p>
+
+            <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; margin-bottom: 16px;">
+                <button id="with-upi" class="with-method card" style="cursor: pointer; text-align: center; padding: 16px;">
+                    <i class="fas fa-mobile-alt" style="color: #3b82f6; font-size: 24px; margin-bottom: 8px;"></i>
+                    <p style="margin: 0; font-size: 12px;">UPI</p>
                 </button>
-                <button onclick="setWithdrawMethod('bank')" id="method-bank" class="method-btn glass rounded-lg p-2 text-center border-2 border-transparent">
-                    <i class="fas fa-university text-green-400 text-xl mb-1"></i>
-                    <p class="text-xs">Bank</p>
+                <button id="with-bank" class="with-method card" style="cursor: pointer; text-align: center; padding: 16px;">
+                    <i class="fas fa-university" style="color: #10b981; font-size: 24px; margin-bottom: 8px;"></i>
+                    <p style="margin: 0; font-size: 12px;">Bank</p>
                 </button>
-                <button onclick="setWithdrawMethod('paytm')" id="method-paytm" class="method-btn glass rounded-lg p-2 text-center border-2 border-transparent">
-                    <i class="fas fa-wallet text-cyan-400 text-xl mb-1"></i>
-                    <p class="text-xs">PayTM</p>
+                <button id="with-paytm" class="with-method card" style="cursor: pointer; text-align: center; padding: 16px;">
+                    <i class="fas fa-wallet" style="color: #06b6d4; font-size: 24px; margin-bottom: 8px;"></i>
+                    <p style="margin: 0; font-size: 12px;">PayTM</p>
                 </button>
             </div>
 
-            <button onclick="openWithdrawModal()" id="withdrawBtn" class="w-full py-3 rounded-xl btn-green text-white font-bold disabled:opacity-50 disabled:cursor-not-allowed">
-                Withdraw Now
-            </button>
+            <button id="withdrawMainBtn" class="btn btn-green" style="padding: 16px; font-size: 16px;">Withdraw Now</button>
         </div>
 
         <!-- Activity -->
-        <div class="glass rounded-2xl p-5">
-            <h3 class="font-bold mb-3">Recent Activity</h3>
-            <div id="activityList" class="space-y-2 max-h-48 overflow-y-auto">
-                <p class="text-center text-gray-500 text-sm py-4">No activity yet</p>
+        <div class="card">
+            <h3 style="margin: 0 0 16px;">Recent Activity</h3>
+            <div id="activityList">
+                <p style="color: #6b7280; text-align: center; padding: 20px;">No activity yet</p>
             </div>
         </div>
-    </main>
+    </div>
 
     <!-- Ad Modal -->
     <div id="adModal" class="modal">
-        <div class="modal-box text-center">
-            <h3 class="text-xl font-bold mb-2">Watch Advertisement</h3>
-            <p class="text-gray-400 text-sm mb-4">Watch to earn ₹<span id="adModalReward">5</span></p>
+        <div class="modal-box" style="text-align: center;">
+            <h2 style="margin-bottom: 8px;">Watch Advertisement</h2>
+            <p style="color: #9ca3af; margin-bottom: 24px;">Earn ₹<span id="adModalVal">5</span></p>
             
-            <div class="glass rounded-xl p-6 mb-4">
-                <div class="text-5xl mb-4">📺</div>
-                <div class="text-3xl font-bold mb-2" id="adCountdown">30</div>
-                <div class="progress-bar">
-                    <div id="adProgress" class="progress-fill" style="width: 0%"></div>
+            <div class="card" style="padding: 40px;">
+                <div style="font-size: 64px; margin-bottom: 16px;">📺</div>
+                <div id="adTimer" style="font-size: 48px; font-weight: bold; margin-bottom: 16px;">30</div>
+                <div style="height: 8px; background: rgba(255,255,255,0.1); border-radius: 4px; overflow: hidden;">
+                    <div id="adProgress" style="height: 100%; width: 0%; background: #ec4899; transition: width 1s;"></div>
                 </div>
             </div>
             
-            <button onclick="closeAdModal()" class="w-full py-2 rounded-lg bg-gray-700 text-white">
-                Skip (No Reward)
-            </button>
+            <button id="skipAdBtn" class="btn" style="background: #374151; margin-top: 16px;">Skip (No Reward)</button>
         </div>
     </div>
 
     <!-- Subscribe Modal -->
     <div id="subModal" class="modal">
         <div class="modal-box">
-            <h3 class="text-xl font-bold mb-1">Upgrade to <span id="subPlanName">Pro</span></h3>
-            <p class="text-gray-400 text-sm mb-4">Unlock higher earnings</p>
+            <h2 style="margin-bottom: 4px;">Upgrade to <span id="subName">Pro</span></h2>
+            <p style="color: #9ca3af; margin-bottom: 24px;">Unlock higher earnings</p>
             
-            <div class="glass rounded-xl p-4 mb-4 space-y-2">
-                <div class="flex justify-between">
+            <div class="card" style="margin-bottom: 16px;">
+                <div style="display: flex; justify-content: space-between; margin-bottom: 8px;">
                     <span>Price:</span>
-                    <span class="font-bold">₹<span id="subPlanPrice">99</span></span>
+                    <span style="font-weight: bold;">₹<span id="subPrice">99</span></span>
                 </div>
-                <div class="flex justify-between">
+                <div style="display: flex; justify-content: space-between; margin-bottom: 8px;">
                     <span>Daily Limit:</span>
-                    <span class="font-bold text-green-400">₹<span id="subPlanLimit">40</span></span>
+                    <span style="font-weight: bold; color: #10b981;">₹<span id="subLimit">40</span></span>
                 </div>
-                <div class="flex justify-between">
+                <div style="display: flex; justify-content: space-between;">
                     <span>Referral:</span>
-                    <span class="font-bold text-yellow-400"><span id="subPlanRef">15</span>%</span>
+                    <span style="font-weight: bold; color: #eab308;"><span id="subRef">15</span>%</span>
                 </div>
             </div>
 
-            <input type="text" id="subName" placeholder="Full Name">
-            <input type="tel" id="subPhone" placeholder="Phone Number">
-            <input type="email" id="subEmail" placeholder="Email">
+            <input type="text" id="subInputName" placeholder="Full Name">
+            <input type="tel" id="subInputPhone" placeholder="Phone Number">
+            <input type="email" id="subInputEmail" placeholder="Email">
 
-            <button onclick="processSubscribe()" class="w-full py-3 rounded-xl btn-primary text-white font-bold mb-2">
-                Pay ₹<span id="subPayBtn">99</span>
-            </button>
-            <button onclick="closeSubModal()" class="w-full py-2 rounded-lg bg-gray-700 text-white">
-                Cancel
-            </button>
+            <button id="payBtn" class="btn btn-purple" style="margin-bottom: 12px;">Pay ₹<span id="payAmount">99</span></button>
+            <button id="cancelSubBtn" class="btn" style="background: #374151;">Cancel</button>
         </div>
     </div>
 
     <!-- Withdraw Modal -->
-    <div id="withdrawModal" class="modal">
+    <div id="withModal" class="modal">
         <div class="modal-box">
-            <h3 class="text-xl font-bold mb-1">Withdraw Money</h3>
-            <p class="text-gray-400 text-sm mb-4">Available: ₹<span id="withdrawAvail">0</span></p>
+            <h2 style="margin-bottom: 4px;">Withdraw Money</h2>
+            <p style="color: #9ca3af; margin-bottom: 24px;">Available: ₹<span id="withAvail">0</span></p>
             
-            <div id="withdraw-upi" class="withdraw-fields">
-                <input type="text" id="upiId" placeholder="UPI ID (name@upi)">
+            <div id="with-upi-fields">
+                <input type="text" id="upiInput" placeholder="UPI ID (name@upi)">
             </div>
             
-            <div id="withdraw-bank" class="withdraw-fields hidden">
+            <div id="with-bank-fields" style="display: none;">
                 <input type="text" placeholder="Account Number">
                 <input type="text" placeholder="IFSC Code">
                 <input type="text" placeholder="Account Holder Name">
             </div>
             
-            <div id="withdraw-paytm" class="withdraw-fields hidden">
+            <div id="with-paytm-fields" style="display: none;">
                 <input type="tel" placeholder="PayTM Number">
             </div>
 
-            <input type="number" id="withdrawAmount" placeholder="Amount (Min ₹100)">
+            <input type="number" id="withAmount" placeholder="Amount (Min ₹100)">
 
-            <button onclick="processWithdraw()" class="w-full py-3 rounded-xl btn-green text-white font-bold mb-2">
-                Withdraw Now
-            </button>
-            <button onclick="closeWithdrawModal()" class="w-full py-2 rounded-lg bg-gray-700 text-white">
-                Cancel
-            </button>
+            <button id="confirmWithBtn" class="btn btn-green" style="margin-bottom: 12px;">Withdraw Now</button>
+            <button id="cancelWithBtn" class="btn" style="background: #374151;">Cancel</button>
         </div>
     </div>
 
     <!-- Referral Modal -->
     <div id="refModal" class="modal">
         <div class="modal-box">
-            <div class="flex justify-between items-center mb-4">
-                <h3 class="text-xl font-bold">Referral Program</h3>
-                <button onclick="closeRefModal()" class="w-8 h-8 rounded-full bg-gray-700 flex items-center justify-center">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 24px;">
+                <h2 style="margin: 0;">Referral Program</h2>
+                <button id="closeRefBtn" style="background: #374151; border: none; color: white; width: 36px; height: 36px; border-radius: 50%; cursor: pointer;">
                     <i class="fas fa-times"></i>
                 </button>
             </div>
 
-            <div class="flex gap-2 mb-4">
-                <button onclick="switchRefTab('stats')" id="refTab-stats" class="tab-btn active flex-1 text-sm">Stats</button>
-                <button onclick="switchRefTab('friends')" id="refTab-friends" class="tab-btn flex-1 text-sm bg-gray-700">Friends</button>
-                <button onclick="switchRefTab('rewards')" id="refTab-rewards" class="tab-btn flex-1 text-sm bg-gray-700">Rewards</button>
+            <div style="display: flex; gap: 8px; margin-bottom: 16px;">
+                <button class="ref-tab btn btn-purple" data-tab="stats" style="flex: 1;">Stats</button>
+                <button class="ref-tab btn" data-tab="friends" style="flex: 1; background: #374151;">Friends</button>
+                <button class="ref-tab btn" data-tab="rewards" style="flex: 1; background: #374151;">Rewards</button>
             </div>
 
-            <!-- Stats Tab -->
-            <div id="refContent-stats">
-                <div class="glass rounded-xl p-4 text-center mb-3">
-                    <p class="text-3xl font-bold text-green-400 mb-1">₹<span id="modalRefEarnings">0</span></p>
-                    <p class="text-sm text-gray-400">Total Referral Earnings</p>
+            <div id="ref-stats" class="ref-content">
+                <div class="card" style="text-align: center; margin-bottom: 12px;">
+                    <p style="font-size: 36px; font-weight: bold; color: #10b981; margin: 0;">₹<span id="modalRefEarn">0</span></p>
+                    <p style="color: #9ca3af; margin: 4px 0 0;">Total Referral Earnings</p>
                 </div>
-                <div class="grid grid-cols-2 gap-3">
-                    <div class="glass rounded-xl p-3 text-center">
-                        <p class="text-2xl font-bold text-purple-400" id="modalTotalRefs">0</p>
-                        <p class="text-xs text-gray-400">Total Invited</p>
+                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px;">
+                    <div class="card" style="text-align: center;">
+                        <p style="font-size: 28px; font-weight: bold; color: #a78bfa; margin: 0;" id="modalTotalRef">0</p>
+                        <p style="color: #9ca3af; font-size: 12px; margin: 4px 0 0;">Total Invited</p>
                     </div>
-                    <div class="glass rounded-xl p-3 text-center">
-                        <p class="text-2xl font-bold text-yellow-400" id="modalActiveRefs">0</p>
-                        <p cla
+                    <div class="card" style="text-align: center;">
+                        <p style="font-size: 28px; font-weight: bold; color: #eab308; margin: 0;" id="modalActiveRef">0</p>
+                        <p style="color: #9ca3af; font-size: 12px; margin: 4px 0 0;">Active Today</p>
+                    </div>
+                </div>
+            </div>
+
+            <div id="ref-friends" class="ref-content" style="display: none;">
+                <div id="refFriendsList">
+                    <p style="color: #6b7280; text-align: center; padding: 20px;">No referrals yet</p>
+                </div>
+            </div>
+
+            <div id="ref-rewards" class="ref-content" style="display: none;">
+                <div class="card" style="margin-bottom: 12px;">
+                    <div style="display: flex; justify-content: space-between; align-items: center;">
+                        <div>
+                            <p style="font-weight: bold; margin: 0;">5 Friends</p>
+                            <p style="color: #9ca3af; font-size: 12px; margin: 4px 0 0;">Bonus: ₹50</p>
+                        </div>
+                        <span style="color: #6b7280; font-size: 12px;">Locked</span>
+                    </div>
+                </div>
+                <div class="card" style="margin-bottom: 12px;">
+                    <div style="display: flex; justify-content: space-between; align-items: center;">
+                        <div>
+                            <p style="font-weight: bold; margin: 0;">10 Friends</p>
+                            <p style="color: #9ca3af; font-size: 12px; margin: 4px 0 0;">Bonus: ₹150</p>
+                        </div>
+                        <span style="color: #6b7280; font-size: 12px;">Locked</span>
+                    </div>
+                </div>
+                <div class="card">
+                    <div style="display: flex; justify-content: space-between; align-items: center;">
+                        <div>
+                            <p style="font-weight: bold; margin: 0;">25 Friends</p>
+                            <p style="color: #9ca3af; font-size: 12px; margin: 4px 0 0;">Bonus: ₹500</p>
+                        </div>
+                        <span style="color: #6b7280; font-size: 12px;">Locked</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Data
+        var plans = {
+            free: { name: 'Free', price: 0, limit: 8, min: 100, click: 0.5, ad: 5, ref: 10 },
+            pro: { name: 'Pro', price: 99, limit: 40, min: 50, click: 2, ad: 15, ref: 15 },
+            elite: { name: 'Elite', price: 299, limit: 150, min: 0, click: 5, ad: 50, ref: 25 }
+        };
+
+        var user = {
+            balance: 0,
+            total: 0,
+            today: 0,
+            earned: 0,
+            clicks: 0,
+            streak: 0,
+            level: 1,
+            plan: 'free',
+            lastClick: 0,
+            lastAd: 0,
+            refEarn: 0,
+            totalRef: 0,
+            activeRef: 0,
+            withMethod: 'upi',
+            selPlan: 'pro',
+            refs: [],
+            userId: 'CP' + Math.random().toString(36).substr(2, 6).toUpperCase()
+        };
+
+        // Load data
+        function load() {
+            var saved = localStorage.getItem('cp_user');
+            if (saved) {
+                var data = JSON.parse(saved);
+                for (var key in data) {
+                    if (user.hasOwnProperty(key)) user[key] = data[key];
+                }
+            }
+            update();
+        }
+
+        function save() {
+            localStorage.setItem('cp_user', JSON.stringify(user));
+        }
+
+        function update() {
+            document.getElementById('headerBal').textContent = user.balance.toFixed(2);
+            document.getElementById('totalBal').textContent = user.total.toFixed(2);
+            document.getElementById('todayBal').textContent = user.today.toFixed(2);
+            document.getElementById('usedLimit').textContent = user.earned.toFixed(2);
+            document.getElementById('maxLimit').textContent = plans[user.plan].limit;
+            document.getElementById('statClick').textContent = user.clicks;
+            document.getElementById('statStreak').textContent = user.streak;
+            document.getElementById('statLevel').textContent = user.level;
+            document.getElementById('clickVal').textContent = plans[user.plan].click.toFixed(2);
+            document.getElementById('adVal').textContent = plans[user.plan].ad.toFixed(2);
+            document.getElementById('minWith').textContent = plans[user.plan].min;
+            document.getElementById('refEarn').textContent = user.refEarn.toFixed(2);
+            document.getElementById('refLinkInput').value = 'https://clickpulse.app/ref/' + user.userId;
+            document.getElementById('userPlan').textContent = plans[user.plan].name.toUpperCase();
+            
+            var pct = (user.earned / plans[user.plan].limit) * 100;
+            document.getElementById('limitBar').style.width = Math.min(pct, 100) + '%';
+            
+            document.getElementById('withdrawMainBtn').disabled = user.balance < plans[user.plan].min;
+            document.getElementById('withdrawMainBtn').style.opacity = user.balance < plans[user.plan].min ? '0.5' : '1';
+            
+            save();
+        }
+
+        function toast(msg, type) {
+            var div = document.createElement('div');
+            div.style.cssText = 'position: fixed; top: 100px; right: 20px; padding: 16px 24px; border-radius: 12px; color: white; font-weight: bold; z-index: 9999; transition: all 0.3s; transform: translateX(400px);';
+            div.style.background = type === 'success' ? '#10b981' : type === 'error' ? '#ef4444' : '#667eea';
+            div.textContent = msg;
+            document.body.appendChild(div);
+            setTimeout(function() { div.style.transform = 'translateX(0)'; }, 100);
+            setTimeout(function() { div.style.transform = 'translateX(400px)'; setTimeout(function() { div.remove(); }, 300); }, 3000);
+        }
+
+        function addActivity(type, amount) {
+            var list = document.getElementById('activityList');
+            var time = new Date().toLocaleTimeString('en-IN', {hour: '2-digit', minute:'2-digit'});
+            var icons = {click: '👆', ad: '📺', withdraw: '💸', ref: '👥'};
+            var texts = {click: 'Daily Click', ad: 'Watched Ad', withdraw: 'Withdrawal', ref: 'Referral'};
+            
+            var div = document.createElement('div');
+            div.className = 'card';
+            div.style.cssText = 'display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px;';
+            div.innerHTML = '<div style="display: flex; align-items: center; gap: 12px;"><span style="font-size: 20px;">' + icons[type] + '</span><div><p style="font-weight: bold; margin: 0;">' + texts[type] + '</p><p style="color: #6b7280; font-size: 11px; margin: 0;">' + time + '</p></div></div><span style="color: #10b981; font-weight: bold;">+₹' + amount + '</span>';
+            
+            if (list.children[0] && list.children[0].textContent.includes('No activity')) {
+                list.innerHTML = '';
+            }
+            list.insertBefore(div, list.firstChild);
+        }
+
+        // Click button
+        document.getElementById('clickBtn').onclick = function() {
+            var now = Date.now();
+            if (now - user.lastClick < 5000) {
+                toast('Wait 5 seconds!', 'error');
+                return;
+            }
+            if (user.earned >= plans[user.plan].limit) {
+                toast('Daily limit reached!', 'error');
+                return;
+            }
+            
+            var reward = plans[user.plan].click;
+            user.balance += reward;
+            user.total += reward;
+            user.today += reward;
+            user.earned += reward;
+            user.clicks++;
+            user.lastClick = now;
+            
+            addActivity('click', reward);
+            update();
+            toast('+₹' + reward + ' earned!', 'success');
+            
+            // Timer
+            var btn = this;
+            var status = document.getElementById('clickStatus');
+            btn.disabled = true;
+            btn.classList.remove('pulse');
+            var time = 5;
+            status.textContent = 'Wait ' + time + 's';
+            
+            var interval = setInterval(function() {
+                time--;
+                if (time <= 0) {
+                    clearInterval(interval);
+                    status.textContent = 'Ready';
+                    btn.disabled = false;
+                    btn.classList.add('pulse');
+                } else {
+                    status.textContent = 'Wait ' + time + 's';
+                }
+            }, 1000);
+        };
+
+        // Ad button
+        document.getElementById('adBtn').onclick = function() {
+            var now = Date.now();
+            if (now - user.lastAd < 60000) {
+                toast('Wait 1 minute!', 'error');
+                return;
+            }
+            if (user.earned >= plans[user.plan].limit) {
+                toast('Daily limit reached!', 'error');
+                return;
+            }
+            
+            document.getElementById('adModal').classList.add('active');
+            document.getElementById('adModalVal').textContent = plans[user.plan].ad;
+            
+            var time = 30;
+            var timer = document.getElementById('adTimer');
+            var progress = document.getElementById('adProgress');
+            
+            var interval = setInterval(function() {
+                time--;
+                timer.textContent = time;
+                progress.style.width = ((30 - time) / 30 * 100) + '%';
+                
+                if (time <= 0) {
+                    clearInterval(interval);
+                    var reward = plans[user.plan].ad;
+                    user.balance += reward;
+                    user.total += reward;
+                    user.today += reward;
+                    user.earned += reward;
+                    user.lastAd = Date.now();
+                    
+                    document.getElementById('adModal').classList.remove('active');
+                    addActivity('ad', reward);
+                    update();
+                    toast('+₹' + reward + ' ad reward!', 'success');
+                }
+            }, 1000);
+        };
+
+        document.getElementById('skipAdBtn').onclick = function() {
+            document.getElementById('adModal').classList.remove('active');
+        };
+
+        // Copy referral
+        document.getElementById('copyBtn').onclick = function() {
+            var input = document.getElementById('refLinkInput');
+            input.select();
+            navigator.clipboard.writeText(input.value);
+            toast('Link copied!', 'success');
+        };
+
+        // Share buttons
+        document.getElementById('shareWa').onclick = function() {
+            var link = document.getElementById('refLinkInput').value;
+            var text = 'Earn money with ClickPulse! Join: ' + link;
+            window.open('https://wa.me/?text=' + encodeURIComponent(text), '_blank');
+        };
+
+        document.getElementById('shareTg').onclick = function() {
+            var link = document.getElementById('refLinkInput').value;
+            window.open('https://t.me/share/url?url=' + encodeURIComponent(link), '_blank');
+        };
+
+        document.getElementById('shareFb').onclick = function() {
+            var link = document.getElementById('refLinkInput').value;
+            window.open('https://www.facebook.com/sharer/sharer.php?u=' + encodeURIComponent(link), '_blank');
+        };
+
+        document.getElementById('shareTw').onclick = function() {
+            var link = document.getElementById('refLinkInput').value;
+            var text = 'Earn money with ClickPulse! Join: ' + link;
+            window.open('https://twitter.com/intent/tweet?text=' + encodeURIComponent(text), '_blank');
+        };
+
+        // Referral modal
+        document.getElementById('refDetailsBtn').onclick = function() {
+            document.getElementById('refModal').classList.add('active');
+            document.getElementById('modalRefEarn').textContent = user.refEarn.toFixed(2);
+            document.getElementById('modalTotalRef').textContent = user.totalRef;
+            document.getElementById('modalActiveRef').textContent = user.activeRef;
+        };
+
+        document.getElementById('closeRefBtn').onclick = function() {
+            document.getElementById('refModal').classList.remove('active');
+        };
+
+        // Ref tabs
+        document.querySelectorAll('.ref-tab').forEach(function(btn) {
+            btn.onclick = function() {
+                var tab = this.getAttribute('data-tab');
+                document.querySelectorAll('.ref-tab').forEach(function(b) {
+                    b.style.background = '#374151';
+                });
+                this.style.background = 'linear-gradient(135deg, #667eea, #764ba2)';
+                
+                document.querySelectorAll('.ref-content').forEach(function(c) {
+                    c.style.display = 'none';
+                });
+                document.getElementById('ref-' + tab).style.display = 'block';
+            };
+        });
+
+        // Plan selection
+        document.querySelectorAll('.plan-option').forEach(function(card) {
+            card.onclick = function() {
+                var plan = this.id.replace('plan-', '');
+                user.selPlan = plan;
+                document.querySelectorAll('.plan-option').forEach(function(c) {
+                    c.style.border = '1px solid rgba(255,255,255,0.1)';
+                });
+                this.style.border = plan === 'elite' ? '2px solid #eab308' : '2px solid #a78bfa';
+            };
+        });
+
+        // Upgrade modal
+        document.getElementById('upgradeBtn').onclick = function() {
+            if (user.selPlan === 'free') {
+                toast('Already on Free!', 'info');
+                return;
+            }
+            var p = plans[user.selPlan];
+            document.getElementById('subName').textContent = p.name;
+            document.getElementById('subPrice').textContent = p.price;
+            document.getElementById('subLimit').textContent = p.limit;
+            document.getElementById('subRef').textContent = p.ref;
+            document.getElementById('payAmount').textContent = p.price;
+            document.getElementById('subModal').classList.add('active');
+        };
+
+        document.getElementById('cancelSubBtn').onclick = function() {
+            document.getElementById('subModal').classList.remove('active');
+        };
+
+        document.getElementById('payBtn').onclick = function() {
+            var name = document.getElementById('subInputName').value;
+            var phone = document.getElementById('subInputPhone').value;
+            if (!name || !phone) {
+                toast('Fill all fields!', 'error');
+                return;
+            }
+            user.plan = user.selPlan;
+            document.getElementById('subModal').classList.remove('active');
+            update();
+            toast('Upgraded to ' + plans[user.plan].name + '!', 'success');
+            document.getElementById('subInputName').value = '';
+            document.getElementById('subInputPhone').value = '';
+            document.getElementById('subInputEmail').value = '';
+        };
+
+        // Withdraw method
+        document.querySelectorAll('.with-method').forEach(function(btn) {
+            btn.onclick = function() {
+                var method = this.id.replace('with-', '');
+                user.withMethod = method;
+                document.querySelectorAll('.with-method').forEach(function(b) {
+                    b.style.border = '1px solid rgba(255,255,255,0.1)';
+                });
+                this.style.border = '2px solid #10b981';
+            };
+        });
+
+        // Withdraw modal
+        document.getElementById('withdrawMainBtn').onclick = function() {
+            if (user.balance < plans[user.plan].min) {
+                toast('Minimum ₹' + plans[user.plan].min + ' required!', 'error');
+                return;
+            }
+            document.getElementById('withAvail').textContent = user.balance.toFixed(2);
+            
+            document.getElementById('with-upi-fields').style.display = 'none';
+            document.getElementById('with-bank-fields').style.display = 'none';
+            document.getElementById('with-paytm-fields').style.display = 'none';
+            document.getElementById('with-' + user.withMethod + '-fields').style.display = 'block';
+            
+            document.getElementById('withModal').classList.add('active');
+        };
+
+        document.getElementById('cancelWithBtn').onclick = function() {
+            document.getElementById('withModal').classList.remove('active');
+        };
+
+        document.getElementById('confirmWithBtn').onclick = function() {
+            var amount = parseFloat(document.getElementById('withAmount').value);
+            if (!amount || amount < plans[user.plan].min) {
+                toast('Minimum ₹' + plans[user.plan].min + '!', 'error');
+                return;
+            }
+            if (amount > user.balance) {
+                toast('Insufficient balance!', 'error');
+                return;
+            }
+            user.balance -= amount;
+            addActivity('withdraw', amount);
+            document.getElementById('withModal').classList.remove('active');
+            update();
+            toast('₹' + amount + ' withdrawn!', 'success');
+            document.getElementById('withAmount').value = '';
+        };
+
+        // Close modals on outside click
+        window.onclick = function(e) {
+            if (e.target.classList.contains('modal')) {
+                e.target.classList.remove('active');
+            }
+        };
+
+        // Init
+        load();
+
+        // Demo referrals
+        if (user.refs.length === 0) {
+            setTimeout(function() {
+                user.refs = [
+                    {name: 'Rahul K.', date: '2h ago', earned: 12.50},
+                    {name: 'Priya S.', date: '5h ago', earned: 8.00}
+                ];
+                user.totalRef = 2;
+                user.activeRef = 2;
+                update();
+            }, 2000);
+        }
+
+        // Simulate ref earnings
+        setInterval(function() {
+            if (user.refs.length > 0 && Math.random() > 0.7) {
+                var earn = (Math.random() * 2).toFixed(2);
+                user.refEarn += parseFloat(earn);
+                user.balance += parseFloat(earn);
+                addActivity('ref', earn);
+                update();
+            }
+        }, 15000);
+    </script>
+</body>
+</html>
