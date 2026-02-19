@@ -3,55 +3,58 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>ClickPulse Pro</title>
+    <title>ClickPulse Pro - Earn Real Money</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        
         body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background: #0f0f1a;
-            color: white;
-            margin: 0;
-            padding: 0;
+            font-family: 'Segoe UI', system-ui, sans-serif;
+            background: linear-gradient(135deg, #0f0f1a 0%, #1a1a2e 100%);
+            color: #ffffff;
+            min-height: 100vh;
         }
-        .card {
-            background: rgba(255,255,255,0.05);
-            border: 1px solid rgba(255,255,255,0.1);
-            border-radius: 16px;
-            padding: 20px;
-            margin-bottom: 16px;
+        
+        .glass {
+            background: rgba(255, 255, 255, 0.05);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
         }
-        .btn {
-            border: none;
-            padding: 12px 24px;
-            border-radius: 12px;
-            cursor: pointer;
-            font-weight: bold;
-            transition: all 0.3s;
-            width: 100%;
+        
+        .gradient-text {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
         }
-        .btn:active {
-            transform: scale(0.95);
+        
+        .btn-primary {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            transition: all 0.3s ease;
         }
-        .btn-purple {
-            background: linear-gradient(135deg, #667eea, #764ba2);
-            color: white;
+        
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 20px rgba(102, 126, 234, 0.4);
         }
-        .btn-green {
-            background: linear-gradient(135deg, #11998e, #38ef7d);
-            color: white;
+        
+        .btn-success {
+            background: linear-gradient(135deg, #11998e 0%, #38ef7d 100%);
         }
-        .btn-pink {
-            background: linear-gradient(135deg, #ec4899, #f43f5e);
-            color: white;
+        
+        .btn-danger {
+            background: linear-gradient(135deg, #fc466b 0%, #3f5efb 100%);
         }
+        
         .pulse {
             animation: pulse 2s infinite;
         }
+        
         @keyframes pulse {
             0%, 100% { box-shadow: 0 0 0 0 rgba(102, 126, 234, 0.7); }
-            50% { box-shadow: 0 0 0 15px rgba(102, 126, 234, 0); }
+            50% { box-shadow: 0 0 0 20px rgba(102, 126, 234, 0); }
         }
+        
         .modal {
             display: none;
             position: fixed;
@@ -59,755 +62,376 @@
             left: 0;
             width: 100%;
             height: 100%;
-            background: rgba(0,0,0,0.9);
+            background: rgba(0,0,0,0.95);
             z-index: 1000;
             justify-content: center;
             align-items: center;
             padding: 20px;
-        }
-        .modal.active {
-            display: flex;
-        }
-        .modal-box {
-            background: #1a1a2e;
-            border-radius: 20px;
-            padding: 24px;
-            width: 100%;
-            max-width: 400px;
-            max-height: 90vh;
             overflow-y: auto;
         }
-        .hidden { display: none !important; }
-        input {
+        
+        .modal.active { display: flex; }
+        
+        .modal-content {
+            background: #1a1a2e;
+            border-radius: 24px;
+            padding: 24px;
+            max-width: 450px;
             width: 100%;
-            padding: 12px;
-            margin-bottom: 12px;
-            border-radius: 8px;
-            border: 1px solid rgba(255,255,255,0.2);
-            background: rgba(255,255,255,0.1);
-            color: white;
-            box-sizing: border-box;
+            max-height: 90vh;
+            overflow-y: auto;
+            border: 1px solid rgba(255,255,255,0.1);
         }
-        .share-btn {
-            padding: 12px;
+        
+        .tab-btn {
+            padding: 12px 24px;
             border-radius: 12px;
-            border: none;
-            color: white;
+            transition: all 0.3s;
             cursor: pointer;
         }
-        .wa { background: #25d366; }
-        .tg { background: #0088cc; }
-        .fb { background: #1877f2; }
-        .tw { background: #1da1f2; }
+        
+        .tab-btn.active {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        }
+        
+        .hidden { display: none !important; }
+        
+        .toast {
+            position: fixed;
+            top: 100px;
+            right: 20px;
+            padding: 16px 24px;
+            border-radius: 12px;
+            color: white;
+            font-weight: 600;
+            z-index: 2000;
+            transform: translateX(400px);
+            transition: transform 0.3s ease;
+        }
+        
+        .toast.show { transform: translateX(0); }
+        
+        input, select, textarea {
+            width: 100%;
+            padding: 14px;
+            border-radius: 12px;
+            border: 1px solid rgba(255,255,255,0.2);
+            background: rgba(255,255,255,0.05);
+            color: white;
+            margin-bottom: 12px;
+            font-size: 16px;
+        }
+        
+        input:focus, select:focus, textarea:focus {
+            outline: none;
+            border-color: #667eea;
+        }
+        
+        .progress-bar {
+            height: 8px;
+            background: rgba(255,255,255,0.1);
+            border-radius: 4px;
+            overflow: hidden;
+        }
+        
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #667eea, #764ba2);
+            transition: width 0.5s ease;
+        }
+        
+        .qr-code {
+            width: 200px;
+            height: 200px;
+            background: white;
+            margin: 20px auto;
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: black;
+            font-size: 14px;
+            text-align: center;
+            padding: 20px;
+        }
+        
+        .nav-item {
+            transition: all 0.3s;
+            cursor: pointer;
+        }
+        
+        .nav-item:hover, .nav-item.active {
+            background: rgba(102, 126, 234, 0.2);
+            color: #667eea;
+        }
     </style>
 </head>
-<body style="padding-bottom: 40px;">
+<body>
 
-    <!-- Header -->
-    <div style="position: fixed; top: 0; width: 100%; background: rgba(15,15,26,0.95); border-bottom: 1px solid rgba(255,255,255,0.1); z-index: 100;">
-        <div style="max-width: 500px; margin: 0 auto; padding: 16px; display: flex; justify-content: space-between; align-items: center;">
-            <div style="display: flex; align-items: center; gap: 12px;">
-                <div style="width: 40px; height: 40px; background: linear-gradient(135deg, #667eea, #764ba2); border-radius: 10px; display: flex; align-items: center; justify-content: center;">
-                    <i class="fas fa-bolt" style="color: white;"></i>
+    <!-- Toast -->
+    <div id="toast" class="toast"></div>
+
+    <!-- LOGIN PAGE -->
+    <div id="loginPage" class="min-h-screen flex items-center justify-center p-4">
+        <div class="glass rounded-3xl p-8 w-full max-w-md">
+            <div class="text-center mb-8">
+                <div class="w-20 h-20 rounded-2xl btn-primary flex items-center justify-center mx-auto mb-4">
+                    <i class="fas fa-bolt text-3xl text-white"></i>
                 </div>
-                <div>
-                    <div style="font-weight: bold; font-size: 18px; background: linear-gradient(135deg, #667eea, #764ba2); -webkit-background-clip: text; -webkit-text-fill-color: transparent;">ClickPulse</div>
-                    <span id="userPlan" style="font-size: 11px; background: #374151; padding: 2px 8px; border-radius: 10px;">FREE</span>
-                </div>
+                <h1 class="text-3xl font-bold gradient-text mb-2">ClickPulse</h1>
+                <p class="text-gray-400">Earn Real Money Daily</p>
             </div>
-            <div style="background: rgba(255,255,255,0.05); padding: 8px 16px; border-radius: 20px; display: flex; align-items: center; gap: 8px;">
-                <i class="fas fa-wallet" style="color: #10b981;"></i>
-                <span style="font-weight: bold;">₹<span id="headerBal">0.00</span></span>
+
+            <div class="flex gap-2 mb-6">
+                <button onclick="switchAuth('login')" id="authTab-login" class="flex-1 py-3 rounded-xl btn-primary text-white font-semibold">Login</button>
+                <button onclick="switchAuth('register')" id="authTab-register" class="flex-1 py-3 rounded-xl bg-gray-700 text-white font-semibold">Register</button>
+            </div>
+
+            <!-- Login Form -->
+            <div id="loginForm">
+                <input type="email" id="loginEmail" placeholder="Email Address" required>
+                <input type="password" id="loginPassword" placeholder="Password" required>
+                <button onclick="login()" class="w-full py-4 rounded-xl btn-primary text-white font-bold text-lg mb-3">
+                    Login
+                </button>
+                <p class="text-center text-gray-400 text-sm">
+                    <a href="#" onclick="showForgotPassword()" class="text-purple-400">Forgot Password?</a>
+                </p>
+            </div>
+
+            <!-- Register Form -->
+            <div id="registerForm" class="hidden">
+                <input type="text" id="regName" placeholder="Full Name" required>
+                <input type="email" id="regEmail" placeholder="Email Address" required>
+                <input type="tel" id="regPhone" placeholder="Phone Number" required>
+                <input type="password" id="regPassword" placeholder="Password" required>
+                <input type="password" id="regConfirmPassword" placeholder="Confirm Password" required>
+                <input type="text" id="regReferral" placeholder="Referral Code (Optional)">
+                <button onclick="register()" class="w-full py-4 rounded-xl btn-success text-white font-bold text-lg">
+                    Create Account
+                </button>
+            </div>
+
+            <div class="mt-6 text-center">
+                <p class="text-gray-400 text-sm mb-3">Or continue with</p>
+                <div class="flex justify-center gap-4">
+                    <button class="w-12 h-12 rounded-full bg-red-500 flex items-center justify-center">
+                        <i class="fab fa-google text-white"></i>
+                    </button>
+                    <button class="w-12 h-12 rounded-full bg-blue-600 flex items-center justify-center">
+                        <i class="fab fa-facebook-f text-white"></i>
+                    </button>
+                </div>
             </div>
         </div>
     </div>
 
-    <!-- Main Content -->
-    <div style="max-width: 500px; margin: 0 auto; padding: 100px 16px 20px;">
-
-        <!-- Balance -->
-        <div class="card" style="text-align: center;">
-            <p style="color: #9ca3af; margin-bottom: 8px;">Total Earnings</p>
-            <h1 style="font-size: 48px; margin: 0; background: linear-gradient(135deg, #667eea, #764ba2); -webkit-background-clip: text; -webkit-text-fill-color: transparent;">₹<span id="totalBal">0.00</span></h1>
-            <p style="color: #10b981; margin-top: 8px;">+<span id="todayBal">0.00</span> today</p>
-            
-            <div class="card" style="margin-top: 16px; margin-bottom: 0;">
-                <div style="display: flex; justify-content: space-between; font-size: 12px; margin-bottom: 8px;">
-                    <span style="color: #9ca3af;">Daily Limit</span>
-                    <span>₹<span id="usedLimit">0</span> / ₹<span id="maxLimit">8</span></span>
-                </div>
-                <div style="height: 8px; background: rgba(255,255,255,0.1); border-radius: 4px; overflow: hidden;">
-                    <div id="limitBar" style="height: 100%; width: 0%; background: linear-gradient(90deg, #667eea, #764ba2); transition: width 0.3s;"></div>
-                </div>
-            </div>
-        </div>
-
-        <!-- Actions -->
-        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-bottom: 16px;">
-            <div class="card" style="text-align: center;">
-                <div style="font-size: 32px; margin-bottom: 8px;">👆</div>
-                <button id="clickBtn" class="btn btn-purple pulse" style="width: 80px; height: 80px; border-radius: 50%; margin: 0 auto 12px; display: flex; align-items: center; justify-content: center; font-size: 24px;">
-                    <i class="fas fa-hand-pointer"></i>
-                </button>
-                <p style="color: #9ca3af; font-size: 12px; margin-bottom: 4px;">Click</p>
-                <p style="color: #10b981; font-weight: bold; font-size: 18px;">₹<span id="clickVal">0.50</span></p>
-                <p id="clickStatus" style="color: #ef4444; font-size: 11px; margin-top: 4px;">Ready</p>
-            </div>
-
-            <div class="card" style="text-align: center;">
-                <div style="font-size: 32px; margin-bottom: 8px;">📺</div>
-                <button id="adBtn" class="btn btn-pink" style="width: 80px; height: 80px; border-radius: 50%; margin: 0 auto 12px; display: flex; align-items: center; justify-content: center; font-size: 24px;">
-                    <i class="fas fa-play"></i>
-                </button>
-                <p style="color: #9ca3af; font-size: 12px; margin-bottom: 4px;">Watch Ad</p>
-                <p style="color: #ec4899; font-weight: bold; font-size: 18px;">₹<span id="adVal">5.00</span></p>
-                <p id="adStatus" style="color: #ef4444; font-size: 11px; margin-top: 4px;">Ready</p>
-            </div>
-        </div>
-
-        <!-- Stats -->
-        <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; margin-bottom: 16px;">
-            <div class="card" style="text-align: center; padding: 16px;">
-                <p id="statClick" style="font-size: 24px; font-weight: bold; margin: 0;">0</p>
-                <p style="color: #9ca3af; font-size: 11px; margin: 4px 0 0;">Clicks</p>
-            </div>
-            <div class="card" style="text-align: center; padding: 16px;">
-                <p id="statStreak" style="font-size: 24px; font-weight: bold; margin: 0; color: #f97316;">0</p>
-                <p style="color: #9ca3af; font-size: 11px; margin: 4px 0 0;">Streak</p>
-            </div>
-            <div class="card" style="text-align: center; padding: 16px;">
-                <p id="statLevel" style="font-size: 24px; font-weight: bold; margin: 0; color: #eab308;">1</p>
-                <p style="color: #9ca3af; font-size: 11px; margin: 4px 0 0;">Level</p>
-            </div>
-        </div>
-
-        <!-- Referral -->
-        <div class="card" style="border: 1px solid rgba(16, 185, 129, 0.3);">
-            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px;">
-                <div style="display: flex; align-items: center; gap: 12px;">
-                    <div style="width: 48px; height: 48px; background: linear-gradient(135deg, #10b981, #059669); border-radius: 50%; display: flex; align-items: center; justify-content: center;">
-                        <i class="fas fa-users" style="color: white; font-size: 20px;"></i>
+    <!-- MAIN APP (Hidden initially) -->
+    <div id="mainApp" class="hidden">
+        
+        <!-- Header -->
+        <header class="fixed top-0 w-full glass z-50 border-b border-white/10">
+            <div class="max-w-lg mx-auto px-4 py-3 flex justify-between items-center">
+                <div class="flex items-center gap-3">
+                    <div class="w-10 h-10 rounded-xl btn-primary flex items-center justify-center">
+                        <i class="fas fa-bolt text-white"></i>
                     </div>
                     <div>
-                        <h3 style="margin: 0;">Refer & Earn</h3>
-                        <p style="color: #9ca3af; font-size: 12px; margin: 4px 0 0;">10-25% commission</p>
+                        <h1 class="font-bold text-lg gradient-text">ClickPulse</h1>
+                        <span id="userPlanBadge" class="text-xs bg-gray-700 px-2 py-0.5 rounded-full">FREE</span>
                     </div>
                 </div>
-                <div style="text-align: right;">
-                    <p style="font-size: 24px; font-weight: bold; color: #10b981; margin: 0;">₹<span id="refEarn">0</span></p>
-                    <p style="color: #9ca3af; font-size: 11px; margin: 0;">Earned</p>
+                <div class="flex items-center gap-3">
+                    <div class="glass px-4 py-2 rounded-full flex items-center gap-2">
+                        <i class="fas fa-wallet text-green-400"></i>
+                        <span class="font-bold">₹<span id="headerBalance">0.00</span></span>
+                    </div>
+                    <button onclick="logout()" class="text-gray-400 hover:text-white">
+                        <i class="fas fa-sign-out-alt"></i>
+                    </button>
                 </div>
             </div>
+        </header>
 
-            <div class="card" style="display: flex; gap: 8px; padding: 12px;">
-                <input type="text" id="refLinkInput" readonly style="margin: 0; flex: 1; font-size: 11px;" value="">
-                <button id="copyBtn" class="btn btn-purple" style="width: auto; padding: 12px 16px;">
-                    <i class="fas fa-copy"></i>
+        <!-- Bottom Navigation -->
+        <nav class="fixed bottom-0 w-full glass border-t border-white/10 z-50">
+            <div class="max-w-lg mx-auto px-4 py-2 flex justify-around">
+                <button onclick="switchTab('home')" class="nav-item active flex flex-col items-center p-2 rounded-xl" id="nav-home">
+                    <i class="fas fa-home text-xl mb-1"></i>
+                    <span class="text-xs">Home</span>
+                </button>
+                <button onclick="switchTab('earn')" class="nav-item flex flex-col items-center p-2 rounded-xl" id="nav-earn">
+                    <i class="fas fa-coins text-xl mb-1"></i>
+                    <span class="text-xs">Earn</span>
+                </button>
+                <button onclick="switchTab('refer')" class="nav-item flex flex-col items-center p-2 rounded-xl" id="nav-refer">
+                    <i class="fas fa-users text-xl mb-1"></i>
+                    <span class="text-xs">Refer</span>
+                </button>
+                <button onclick="switchTab('wallet')" class="nav-item flex flex-col items-center p-2 rounded-xl" id="nav-wallet">
+                    <i class="fas fa-wallet text-xl mb-1"></i>
+                    <span class="text-xs">Wallet</span>
+                </button>
+                <button onclick="switchTab('profile')" class="nav-item flex flex-col items-center p-2 rounded-xl" id="nav-profile">
+                    <i class="fas fa-user text-xl mb-1"></i>
+                    <span class="text-xs">Profile</span>
                 </button>
             </div>
+        </nav>
 
-            <div style="display: grid; grid-template-columns: repeat(4, 1fr); gap: 8px; margin-bottom: 12px;">
-                <button id="shareWa" class="share-btn wa"><i class="fab fa-whatsapp"></i></button>
-                <button id="shareTg" class="share-btn tg"><i class="fab fa-telegram"></i></button>
-                <button id="shareFb" class="share-btn fb"><i class="fab fa-facebook-f"></i></button>
-                <button id="shareTw" class="share-btn tw"><i class="fab fa-twitter"></i></button>
-            </div>
+        <!-- Main Content -->
+        <main class="max-w-lg mx-auto px-4 pt-20 pb-24">
 
-            <button id="refDetailsBtn" class="btn btn-green">View Details</button>
-        </div>
-
-        <!-- Subscription -->
-        <div class="card">
-            <h3 style="margin: 0 0 16px;">Upgrade Plan</h3>
-            
-            <div id="plan-free" class="card plan-option" style="cursor: pointer; margin-bottom: 12px; padding: 16px;">
-                <div style="display: flex; justify-content: space-between; align-items: center;">
-                    <div>
-                        <p style="font-weight: bold; margin: 0;">Free</p>
-                        <p style="color: #9ca3af; font-size: 12px; margin: 4px 0 0;">₹8/day • 10% ref</p>
-                    </div>
-                    <p style="font-weight: bold; margin: 0;">₹0</p>
-                </div>
-            </div>
-
-            <div id="plan-pro" class="card plan-option" style="cursor: pointer; margin-bottom: 12px; padding: 16px;">
-                <div style="display: flex; justify-content: space-between; align-items: center;">
-                    <div>
-                        <p style="font-weight: bold; margin: 0; color: #a78bfa;">Pro ⭐</p>
-                        <p style="color: #9ca3af; font-size: 12px; margin: 4px 0 0;">₹40/day • 15% ref</p>
-                    </div>
-                    <p style="font-weight: bold; margin: 0; color: #a78bfa;">₹99</p>
-                </div>
-            </div>
-
-            <div id="plan-elite" class="card plan-option" style="cursor: pointer; margin-bottom: 16px; padding: 16px;">
-                <div style="display: flex; justify-content: space-between; align-items: center;">
-                    <div>
-                        <p style="font-weight: bold; margin: 0; color: #eab308;">Elite 👑</p>
-                        <p style="color: #9ca3af; font-size: 12px; margin: 4px 0 0;">₹150/day • 25% ref</p>
-                    </div>
-                    <p style="font-weight: bold; margin: 0; color: #eab308;">₹299</p>
-                </div>
-            </div>
-
-            <button id="upgradeBtn" class="btn btn-purple" style="padding: 16px; font-size: 16px;">Upgrade Now</button>
-        </div>
-
-        <!-- Withdraw -->
-        <div class="card">
-            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px;">
-                <h3 style="margin: 0;">Withdraw</h3>
-                <span style="color: #9ca3af; font-size: 12px;">Min: ₹<span id="minWith">100</span></span>
-            </div>
-
-            <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; margin-bottom: 16px;">
-                <button id="with-upi" class="with-method card" style="cursor: pointer; text-align: center; padding: 16px;">
-                    <i class="fas fa-mobile-alt" style="color: #3b82f6; font-size: 24px; margin-bottom: 8px;"></i>
-                    <p style="margin: 0; font-size: 12px;">UPI</p>
-                </button>
-                <button id="with-bank" class="with-method card" style="cursor: pointer; text-align: center; padding: 16px;">
-                    <i class="fas fa-university" style="color: #10b981; font-size: 24px; margin-bottom: 8px;"></i>
-                    <p style="margin: 0; font-size: 12px;">Bank</p>
-                </button>
-                <button id="with-paytm" class="with-method card" style="cursor: pointer; text-align: center; padding: 16px;">
-                    <i class="fas fa-wallet" style="color: #06b6d4; font-size: 24px; margin-bottom: 8px;"></i>
-                    <p style="margin: 0; font-size: 12px;">PayTM</p>
-                </button>
-            </div>
-
-            <button id="withdrawMainBtn" class="btn btn-green" style="padding: 16px; font-size: 16px;">Withdraw Now</button>
-        </div>
-
-        <!-- Activity -->
-        <div class="card">
-            <h3 style="margin: 0 0 16px;">Recent Activity</h3>
-            <div id="activityList">
-                <p style="color: #6b7280; text-align: center; padding: 20px;">No activity yet</p>
-            </div>
-        </div>
-    </div>
-
-    <!-- Ad Modal -->
-    <div id="adModal" class="modal">
-        <div class="modal-box" style="text-align: center;">
-            <h2 style="margin-bottom: 8px;">Watch Advertisement</h2>
-            <p style="color: #9ca3af; margin-bottom: 24px;">Earn ₹<span id="adModalVal">5</span></p>
-            
-            <div class="card" style="padding: 40px;">
-                <div style="font-size: 64px; margin-bottom: 16px;">📺</div>
-                <div id="adTimer" style="font-size: 48px; font-weight: bold; margin-bottom: 16px;">30</div>
-                <div style="height: 8px; background: rgba(255,255,255,0.1); border-radius: 4px; overflow: hidden;">
-                    <div id="adProgress" style="height: 100%; width: 0%; background: #ec4899; transition: width 1s;"></div>
-                </div>
-            </div>
-            
-            <button id="skipAdBtn" class="btn" style="background: #374151; margin-top: 16px;">Skip (No Reward)</button>
-        </div>
-    </div>
-
-    <!-- Subscribe Modal -->
-    <div id="subModal" class="modal">
-        <div class="modal-box">
-            <h2 style="margin-bottom: 4px;">Upgrade to <span id="subName">Pro</span></h2>
-            <p style="color: #9ca3af; margin-bottom: 24px;">Unlock higher earnings</p>
-            
-            <div class="card" style="margin-bottom: 16px;">
-                <div style="display: flex; justify-content: space-between; margin-bottom: 8px;">
-                    <span>Price:</span>
-                    <span style="font-weight: bold;">₹<span id="subPrice">99</span></span>
-                </div>
-                <div style="display: flex; justify-content: space-between; margin-bottom: 8px;">
-                    <span>Daily Limit:</span>
-                    <span style="font-weight: bold; color: #10b981;">₹<span id="subLimit">40</span></span>
-                </div>
-                <div style="display: flex; justify-content: space-between;">
-                    <span>Referral:</span>
-                    <span style="font-weight: bold; color: #eab308;"><span id="subRef">15</span>%</span>
-                </div>
-            </div>
-
-            <input type="text" id="subInputName" placeholder="Full Name">
-            <input type="tel" id="subInputPhone" placeholder="Phone Number">
-            <input type="email" id="subInputEmail" placeholder="Email">
-
-            <button id="payBtn" class="btn btn-purple" style="margin-bottom: 12px;">Pay ₹<span id="payAmount">99</span></button>
-            <button id="cancelSubBtn" class="btn" style="background: #374151;">Cancel</button>
-        </div>
-    </div>
-
-    <!-- Withdraw Modal -->
-    <div id="withModal" class="modal">
-        <div class="modal-box">
-            <h2 style="margin-bottom: 4px;">Withdraw Money</h2>
-            <p style="color: #9ca3af; margin-bottom: 24px;">Available: ₹<span id="withAvail">0</span></p>
-            
-            <div id="with-upi-fields">
-                <input type="text" id="upiInput" placeholder="UPI ID (name@upi)">
-            </div>
-            
-            <div id="with-bank-fields" style="display: none;">
-                <input type="text" placeholder="Account Number">
-                <input type="text" placeholder="IFSC Code">
-                <input type="text" placeholder="Account Holder Name">
-            </div>
-            
-            <div id="with-paytm-fields" style="display: none;">
-                <input type="tel" placeholder="PayTM Number">
-            </div>
-
-            <input type="number" id="withAmount" placeholder="Amount (Min ₹100)">
-
-            <button id="confirmWithBtn" class="btn btn-green" style="margin-bottom: 12px;">Withdraw Now</button>
-            <button id="cancelWithBtn" class="btn" style="background: #374151;">Cancel</button>
-        </div>
-    </div>
-
-    <!-- Referral Modal -->
-    <div id="refModal" class="modal">
-        <div class="modal-box">
-            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 24px;">
-                <h2 style="margin: 0;">Referral Program</h2>
-                <button id="closeRefBtn" style="background: #374151; border: none; color: white; width: 36px; height: 36px; border-radius: 50%; cursor: pointer;">
-                    <i class="fas fa-times"></i>
-                </button>
-            </div>
-
-            <div style="display: flex; gap: 8px; margin-bottom: 16px;">
-                <button class="ref-tab btn btn-purple" data-tab="stats" style="flex: 1;">Stats</button>
-                <button class="ref-tab btn" data-tab="friends" style="flex: 1; background: #374151;">Friends</button>
-                <button class="ref-tab btn" data-tab="rewards" style="flex: 1; background: #374151;">Rewards</button>
-            </div>
-
-            <div id="ref-stats" class="ref-content">
-                <div class="card" style="text-align: center; margin-bottom: 12px;">
-                    <p style="font-size: 36px; font-weight: bold; color: #10b981; margin: 0;">₹<span id="modalRefEarn">0</span></p>
-                    <p style="color: #9ca3af; margin: 4px 0 0;">Total Referral Earnings</p>
-                </div>
-                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px;">
-                    <div class="card" style="text-align: center;">
-                        <p style="font-size: 28px; font-weight: bold; color: #a78bfa; margin: 0;" id="modalTotalRef">0</p>
-                        <p style="color: #9ca3af; font-size: 12px; margin: 4px 0 0;">Total Invited</p>
-                    </div>
-                    <div class="card" style="text-align: center;">
-                        <p style="font-size: 28px; font-weight: bold; color: #eab308; margin: 0;" id="modalActiveRef">0</p>
-                        <p style="color: #9ca3af; font-size: 12px; margin: 4px 0 0;">Active Today</p>
-                    </div>
-                </div>
-            </div>
-
-            <div id="ref-friends" class="ref-content" style="display: none;">
-                <div id="refFriendsList">
-                    <p style="color: #6b7280; text-align: center; padding: 20px;">No referrals yet</p>
-                </div>
-            </div>
-
-            <div id="ref-rewards" class="ref-content" style="display: none;">
-                <div class="card" style="margin-bottom: 12px;">
-                    <div style="display: flex; justify-content: space-between; align-items: center;">
-                        <div>
-                            <p style="font-weight: bold; margin: 0;">5 Friends</p>
-                            <p style="color: #9ca3af; font-size: 12px; margin: 4px 0 0;">Bonus: ₹50</p>
-                        </div>
-                        <span style="color: #6b7280; font-size: 12px;">Locked</span>
-                    </div>
-                </div>
-                <div class="card" style="margin-bottom: 12px;">
-                    <div style="display: flex; justify-content: space-between; align-items: center;">
-                        <div>
-                            <p style="font-weight: bold; margin: 0;">10 Friends</p>
-                            <p style="color: #9ca3af; font-size: 12px; margin: 4px 0 0;">Bonus: ₹150</p>
-                        </div>
-                        <span style="color: #6b7280; font-size: 12px;">Locked</span>
-                    </div>
-                </div>
-                <div class="card">
-                    <div style="display: flex; justify-content: space-between; align-items: center;">
-                        <div>
-                            <p style="font-weight: bold; margin: 0;">25 Friends</p>
-                            <p style="color: #9ca3af; font-size: 12px; margin: 4px 0 0;">Bonus: ₹500</p>
-                        </div>
-                        <span style="color: #6b7280; font-size: 12px;">Locked</span>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <script>
-        // Data
-        var plans = {
-            free: { name: 'Free', price: 0, limit: 8, min: 100, click: 0.5, ad: 5, ref: 10 },
-            pro: { name: 'Pro', price: 99, limit: 40, min: 50, click: 2, ad: 15, ref: 15 },
-            elite: { name: 'Elite', price: 299, limit: 150, min: 0, click: 5, ad: 50, ref: 25 }
-        };
-
-        var user = {
-            balance: 0,
-            total: 0,
-            today: 0,
-            earned: 0,
-            clicks: 0,
-            streak: 0,
-            level: 1,
-            plan: 'free',
-            lastClick: 0,
-            lastAd: 0,
-            refEarn: 0,
-            totalRef: 0,
-            activeRef: 0,
-            withMethod: 'upi',
-            selPlan: 'pro',
-            refs: [],
-            userId: 'CP' + Math.random().toString(36).substr(2, 6).toUpperCase()
-        };
-
-        // Load data
-        function load() {
-            var saved = localStorage.getItem('cp_user');
-            if (saved) {
-                var data = JSON.parse(saved);
-                for (var key in data) {
-                    if (user.hasOwnProperty(key)) user[key] = data[key];
-                }
-            }
-            update();
-        }
-
-        function save() {
-            localStorage.setItem('cp_user', JSON.stringify(user));
-        }
-
-        function update() {
-            document.getElementById('headerBal').textContent = user.balance.toFixed(2);
-            document.getElementById('totalBal').textContent = user.total.toFixed(2);
-            document.getElementById('todayBal').textContent = user.today.toFixed(2);
-            document.getElementById('usedLimit').textContent = user.earned.toFixed(2);
-            document.getElementById('maxLimit').textContent = plans[user.plan].limit;
-            document.getElementById('statClick').textContent = user.clicks;
-            document.getElementById('statStreak').textContent = user.streak;
-            document.getElementById('statLevel').textContent = user.level;
-            document.getElementById('clickVal').textContent = plans[user.plan].click.toFixed(2);
-            document.getElementById('adVal').textContent = plans[user.plan].ad.toFixed(2);
-            document.getElementById('minWith').textContent = plans[user.plan].min;
-            document.getElementById('refEarn').textContent = user.refEarn.toFixed(2);
-            document.getElementById('refLinkInput').value = 'https://clickpulse.app/ref/' + user.userId;
-            document.getElementById('userPlan').textContent = plans[user.plan].name.toUpperCase();
-            
-            var pct = (user.earned / plans[user.plan].limit) * 100;
-            document.getElementById('limitBar').style.width = Math.min(pct, 100) + '%';
-            
-            document.getElementById('withdrawMainBtn').disabled = user.balance < plans[user.plan].min;
-            document.getElementById('withdrawMainBtn').style.opacity = user.balance < plans[user.plan].min ? '0.5' : '1';
-            
-            save();
-        }
-
-        function toast(msg, type) {
-            var div = document.createElement('div');
-            div.style.cssText = 'position: fixed; top: 100px; right: 20px; padding: 16px 24px; border-radius: 12px; color: white; font-weight: bold; z-index: 9999; transition: all 0.3s; transform: translateX(400px);';
-            div.style.background = type === 'success' ? '#10b981' : type === 'error' ? '#ef4444' : '#667eea';
-            div.textContent = msg;
-            document.body.appendChild(div);
-            setTimeout(function() { div.style.transform = 'translateX(0)'; }, 100);
-            setTimeout(function() { div.style.transform = 'translateX(400px)'; setTimeout(function() { div.remove(); }, 300); }, 3000);
-        }
-
-        function addActivity(type, amount) {
-            var list = document.getElementById('activityList');
-            var time = new Date().toLocaleTimeString('en-IN', {hour: '2-digit', minute:'2-digit'});
-            var icons = {click: '👆', ad: '📺', withdraw: '💸', ref: '👥'};
-            var texts = {click: 'Daily Click', ad: 'Watched Ad', withdraw: 'Withdrawal', ref: 'Referral'};
-            
-            var div = document.createElement('div');
-            div.className = 'card';
-            div.style.cssText = 'display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px;';
-            div.innerHTML = '<div style="display: flex; align-items: center; gap: 12px;"><span style="font-size: 20px;">' + icons[type] + '</span><div><p style="font-weight: bold; margin: 0;">' + texts[type] + '</p><p style="color: #6b7280; font-size: 11px; margin: 0;">' + time + '</p></div></div><span style="color: #10b981; font-weight: bold;">+₹' + amount + '</span>';
-            
-            if (list.children[0] && list.children[0].textContent.includes('No activity')) {
-                list.innerHTML = '';
-            }
-            list.insertBefore(div, list.firstChild);
-        }
-
-        // Click button
-        document.getElementById('clickBtn').onclick = function() {
-            var now = Date.now();
-            if (now - user.lastClick < 5000) {
-                toast('Wait 5 seconds!', 'error');
-                return;
-            }
-            if (user.earned >= plans[user.plan].limit) {
-                toast('Daily limit reached!', 'error');
-                return;
-            }
-            
-            var reward = plans[user.plan].click;
-            user.balance += reward;
-            user.total += reward;
-            user.today += reward;
-            user.earned += reward;
-            user.clicks++;
-            user.lastClick = now;
-            
-            addActivity('click', reward);
-            update();
-            toast('+₹' + reward + ' earned!', 'success');
-            
-            // Timer
-            var btn = this;
-            var status = document.getElementById('clickStatus');
-            btn.disabled = true;
-            btn.classList.remove('pulse');
-            var time = 5;
-            status.textContent = 'Wait ' + time + 's';
-            
-            var interval = setInterval(function() {
-                time--;
-                if (time <= 0) {
-                    clearInterval(interval);
-                    status.textContent = 'Ready';
-                    btn.disabled = false;
-                    btn.classList.add('pulse');
-                } else {
-                    status.textContent = 'Wait ' + time + 's';
-                }
-            }, 1000);
-        };
-
-        // Ad button
-        document.getElementById('adBtn').onclick = function() {
-            var now = Date.now();
-            if (now - user.lastAd < 60000) {
-                toast('Wait 1 minute!', 'error');
-                return;
-            }
-            if (user.earned >= plans[user.plan].limit) {
-                toast('Daily limit reached!', 'error');
-                return;
-            }
-            
-            document.getElementById('adModal').classList.add('active');
-            document.getElementById('adModalVal').textContent = plans[user.plan].ad;
-            
-            var time = 30;
-            var timer = document.getElementById('adTimer');
-            var progress = document.getElementById('adProgress');
-            
-            var interval = setInterval(function() {
-                time--;
-                timer.textContent = time;
-                progress.style.width = ((30 - time) / 30 * 100) + '%';
-                
-                if (time <= 0) {
-                    clearInterval(interval);
-                    var reward = plans[user.plan].ad;
-                    user.balance += reward;
-                    user.total += reward;
-                    user.today += reward;
-                    user.earned += reward;
-                    user.lastAd = Date.now();
+            <!-- HOME TAB -->
+            <div id="tab-home" class="tab-content">
+                <!-- Balance Card -->
+                <div class="glass rounded-3xl p-6 mb-6 text-center relative overflow-hidden">
+                    <div class="absolute top-0 right-0 w-40 h-40 bg-purple-500/20 rounded-full blur-3xl -mr-20 -mt-20"></div>
                     
-                    document.getElementById('adModal').classList.remove('active');
-                    addActivity('ad', reward);
-                    update();
-                    toast('+₹' + reward + ' ad reward!', 'success');
-                }
-            }, 1000);
-        };
+                    <p class="text-gray-400 text-sm mb-2">Total Balance</p>
+                    <h2 class="text-5xl font-bold gradient-text mb-2">₹<span id="totalBalance">0.00</span></h2>
+                    <div class="flex justify-center items-center gap-2 text-green-400 text-sm mb-4">
+                        <i class="fas fa-arrow-up"></i>
+                        <span>+<span id="todayEarned">0.00</span> today</span>
+                    </div>
+                    
+                    <div class="glass rounded-xl p-3">
+                        <div class="flex justify-between text-xs mb-2">
+                            <span class="text-gray-400">Daily Limit</span>
+                            <span class="font-semibold"><span id="usedLimit">0</span> / ₹<span id="dailyLimit">8</span></span>
+                        </div>
+                        <div class="progress-bar">
+                            <div id="limitProgress" class="progress-fill" style="width: 0%"></div>
+                        </div>
+                    </div>
+                </div>
 
-        document.getElementById('skipAdBtn').onclick = function() {
-            document.getElementById('adModal').classList.remove('active');
-        };
+                <!-- Quick Actions -->
+                <div class="grid grid-cols-2 gap-4 mb-6">
+                    <button onclick="switchTab('earn')" class="glass rounded-2xl p-5 text-center hover:bg-white/10 transition">
+                        <div class="w-14 h-14 rounded-full btn-primary flex items-center justify-center mx-auto mb-3 pulse">
+                            <i class="fas fa-hand-pointer text-xl"></i>
+                        </div>
+                        <p class="font-semibold">Start Earning</p>
+                        <p class="text-xs text-gray-400 mt-1">Click & Watch Ads</p>
+                    </button>
+                    <button onclick="openWithdrawModal()" class="glass rounded-2xl p-5 text-center hover:bg-white/10 transition">
+                        <div class="w-14 h-14 rounded-full btn-success flex items-center justify-center mx-auto mb-3">
+                            <i class="fas fa-money-bill-wave text-xl"></i>
+                        </div>
+                        <p class="font-semibold">Withdraw</p>
+                        <p class="text-xs text-gray-400 mt-1">Min: ₹<span id="minWithdraw">100</span></p>
+                    </button>
+                </div>
 
-        // Copy referral
-        document.getElementById('copyBtn').onclick = function() {
-            var input = document.getElementById('refLinkInput');
-            input.select();
-            navigator.clipboard.writeText(input.value);
-            toast('Link copied!', 'success');
-        };
+                <!-- Stats Grid -->
+                <div class="grid grid-cols-4 gap-3 mb-6">
+                    <div class="glass rounded-xl p-3 text-center">
+                        <p id="statClicks" class="text-xl font-bold text-purple-400">0</p>
+                        <p class="text-xs text-gray-400">Clicks</p>
+                    </div>
+                    <div class="glass rounded-xl p-3 text-center">
+                        <p id="statAds" class="text-xl font-bold text-pink-400">0</p>
+                        <p class="text-xs text-gray-400">Ads</p>
+                    </div>
+                    <div class="glass rounded-xl p-3 text-center">
+                        <p id="statRefs" class="text-xl font-bold text-green-400">0</p>
+                        <p class="text-xs text-gray-400">Referrals</p>
+                    </div>
+                    <div class="glass rounded-xl p-3 text-center">
+                        <p id="statStreak" class="text-xl font-bold text-yellow-400">0</p>
+                        <p class="text-xs text-gray-400">Streak</p>
+                    </div>
+                </div>
 
-        // Share buttons
-        document.getElementById('shareWa').onclick = function() {
-            var link = document.getElementById('refLinkInput').value;
-            var text = 'Earn money with ClickPulse! Join: ' + link;
-            window.open('https://wa.me/?text=' + encodeURIComponent(text), '_blank');
-        };
+                <!-- Recent Activity -->
+                <div class="glass rounded-2xl p-5">
+                    <div class="flex justify-between items-center mb-4">
+                        <h3 class="font-bold">Recent Activity</h3>
+                        <button onclick="viewAllActivity()" class="text-xs text-purple-400">View All</button>
+                    </div>
+                    <div id="homeActivityList" class="space-y-3 max-h-64 overflow-y-auto">
+                        <p class="text-center text-gray-500 py-4">No activity yet</p>
+                    </div>
+                </div>
+            </div>
 
-        document.getElementById('shareTg').onclick = function() {
-            var link = document.getElementById('refLinkInput').value;
-            window.open('https://t.me/share/url?url=' + encodeURIComponent(link), '_blank');
-        };
-
-        document.getElementById('shareFb').onclick = function() {
-            var link = document.getElementById('refLinkInput').value;
-            window.open('https://www.facebook.com/sharer/sharer.php?u=' + encodeURIComponent(link), '_blank');
-        };
-
-        document.getElementById('shareTw').onclick = function() {
-            var link = document.getElementById('refLinkInput').value;
-            var text = 'Earn money with ClickPulse! Join: ' + link;
-            window.open('https://twitter.com/intent/tweet?text=' + encodeURIComponent(text), '_blank');
-        };
-
-        // Referral modal
-        document.getElementById('refDetailsBtn').onclick = function() {
-            document.getElementById('refModal').classList.add('active');
-            document.getElementById('modalRefEarn').textContent = user.refEarn.toFixed(2);
-            document.getElementById('modalTotalRef').textContent = user.totalRef;
-            document.getElementById('modalActiveRef').textContent = user.activeRef;
-        };
-
-        document.getElementById('closeRefBtn').onclick = function() {
-            document.getElementById('refModal').classList.remove('active');
-        };
-
-        // Ref tabs
-        document.querySelectorAll('.ref-tab').forEach(function(btn) {
-            btn.onclick = function() {
-                var tab = this.getAttribute('data-tab');
-                document.querySelectorAll('.ref-tab').forEach(function(b) {
-                    b.style.background = '#374151';
-                });
-                this.style.background = 'linear-gradient(135deg, #667eea, #764ba2)';
+            <!-- EARN TAB -->
+            <div id="tab-earn" class="tab-content hidden">
+                <h2 class="text-2xl font-bold mb-6">Earn Money</h2>
                 
-                document.querySelectorAll('.ref-content').forEach(function(c) {
-                    c.style.display = 'none';
-                });
-                document.getElementById('ref-' + tab).style.display = 'block';
-            };
-        });
+                <!-- Click Section -->
+                <div class="glass rounded-2xl p-6 mb-6 text-center">
+                    <div class="text-5xl mb-4">👆</div>
+                    <h3 class="text-xl font-bold mb-2">Daily Click</h3>
+                    <p class="text-gray-400 text-sm mb-4">Click the button to earn instant rewards</p>
+                    
+                    <button id="earnClickBtn" onclick="handleEarnClick()" class="w-24 h-24 rounded-full btn-primary pulse flex items-center justify-center text-3xl mx-auto mb-4 shadow-2xl shadow-purple-500/50">
+                        <i class="fas fa-hand-pointer"></i>
+                    </button>
+                    
+                    <p class="text-2xl font-bold text-green-400 mb-2">₹<span id="clickReward">0.50</span></p>
+                    <p id="clickTimer" class="text-sm text-red-400">Ready to click</p>
+                    
+                    <div class="mt-4 glass rounded-lg p-3">
+                        <p class="text-xs text-gray-400">Next click available in</p>
+                        <p id="clickCountdown" class="text-lg font-bold">00:00</p>
+                    </div>
+                </div>
 
-        // Plan selection
-        document.querySelectorAll('.plan-option').forEach(function(card) {
-            card.onclick = function() {
-                var plan = this.id.replace('plan-', '');
-                user.selPlan = plan;
-                document.querySelectorAll('.plan-option').forEach(function(c) {
-                    c.style.border = '1px solid rgba(255,255,255,0.1)';
-                });
-                this.style.border = plan === 'elite' ? '2px solid #eab308' : '2px solid #a78bfa';
-            };
-        });
+                <!-- Watch Ad Section -->
+                <div class="glass rounded-2xl p-6 mb-6 text-center">
+                    <div class="text-5xl mb-4">📺</div>
+                    <h3 class="text-xl font-bold mb-2">Watch Advertisement</h3>
+                    <p class="text-gray-400 text-sm mb-4">Watch 30-sec ad to earn more</p>
+                    
+                    <button id="earnAdBtn" onclick="handleWatchAd()" class="w-24 h-24 rounded-full bg-gradient-to-r from-pink-500 to-rose-500 flex items-center justify-center text-3xl mx-auto mb-4 shadow-lg">
+                        <i class="fas fa-play"></i>
+                    </button>
+                    
+                    <p class="text-2xl font-bold text-pink-400 mb-2">₹<span id="adReward">5.00</span></p>
+                    <p id="adTimer" class="text-sm text-red-400">Ready</p>
+                </div>
 
-        // Upgrade modal
-        document.getElementById('upgradeBtn').onclick = function() {
-            if (user.selPlan === 'free') {
-                toast('Already on Free!', 'info');
-                return;
-            }
-            var p = plans[user.selPlan];
-            document.getElementById('subName').textContent = p.name;
-            document.getElementById('subPrice').textContent = p.price;
-            document.getElementById('subLimit').textContent = p.limit;
-            document.getElementById('subRef').textContent = p.ref;
-            document.getElementById('payAmount').textContent = p.price;
-            document.getElementById('subModal').classList.add('active');
-        };
+                <!-- Offer Wall -->
+                <div class="glass rounded-2xl p-5">
+                    <h3 class="font-bold mb-4">More Offers</h3>
+                    <div class="space-y-3">
+                        <div class="glass rounded-xl p-4 flex items-center gap-4">
+                            <div class="w-12 h-12 rounded-full bg-blue-500 flex items-center justify-center">
+                                <i class="fas fa-download text-white"></i>
+                            </div>
+                            <div class="flex-1">
+                                <p class="font-semibold">Install Apps</p>
+                                <p class="text-xs text-gray-400">₹10-50 per install</p>
+                            </div>
+                            <button class="btn-primary px-4 py-2 rounded-lg text-sm">Start</button>
+                        </div>
+                        <div class="glass rounded-xl p-4 flex items-center gap-4">
+                            <div class="w-12 h-12 rounded-full bg-green-500 flex items-center justify-center">
+                                <i class="fas fa-poll text-white"></i>
+                            </div>
+                            <div class="flex-1">
+                                <p class="font-semibold">Complete Surveys</p>
+                                <p class="text-xs text-gray-400">₹20-100 per survey</p>
+                            </div>
+                            <button class="btn-primary px-4 py-2 rounded-lg text-sm">Start</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
 
-        document.getElementById('cancelSubBtn').onclick = function() {
-            document.getElementById('subModal').classList.remove('active');
-        };
-
-        document.getElementById('payBtn').onclick = function() {
-            var name = document.getElementById('subInputName').value;
-            var phone = document.getElementById('subInputPhone').value;
-            if (!name || !phone) {
-                toast('Fill all fields!', 'error');
-                return;
-            }
-            user.plan = user.selPlan;
-            document.getElementById('subModal').classList.remove('active');
-            update();
-            toast('Upgraded to ' + plans[user.plan].name + '!', 'success');
-            document.getElementById('subInputName').value = '';
-            document.getElementById('subInputPhone').value = '';
-            document.getElementById('subInputEmail').value = '';
-        };
-
-        // Withdraw method
-        document.querySelectorAll('.with-method').forEach(function(btn) {
-            btn.onclick = function() {
-                var method = this.id.replace('with-', '');
-                user.withMethod = method;
-                document.querySelectorAll('.with-method').forEach(function(b) {
-                    b.style.border = '1px solid rgba(255,255,255,0.1)';
-                });
-                this.style.border = '2px solid #10b981';
-            };
-        });
-
-        // Withdraw modal
-        document.getElementById('withdrawMainBtn').onclick = function() {
-            if (user.balance < plans[user.plan].min) {
-                toast('Minimum ₹' + plans[user.plan].min + ' required!', 'error');
-                return;
-            }
-            document.getElementById('withAvail').textContent = user.balance.toFixed(2);
-            
-            document.getElementById('with-upi-fields').style.display = 'none';
-            document.getElementById('with-bank-fields').style.display = 'none';
-            document.getElementById('with-paytm-fields').style.display = 'none';
-            document.getElementById('with-' + user.withMethod + '-fields').style.display = 'block';
-            
-            document.getElementById('withModal').classList.add('active');
-        };
-
-        document.getElementById('cancelWithBtn').onclick = function() {
-            document.getElementById('withModal').classList.remove('active');
-        };
-
-        document.getElementById('confirmWithBtn').onclick = function() {
-            var amount = parseFloat(document.getElementById('withAmount').value);
-            if (!amount || amount < plans[user.plan].min) {
-                toast('Minimum ₹' + plans[user.plan].min + '!', 'error');
-                return;
-            }
-            if (amount > user.balance) {
-                toast('Insufficient balance!', 'error');
-                return;
-            }
-            user.balance -= amount;
-            addActivity('withdraw', amount);
-            document.getElementById('withModal').classList.remove('active');
-            update();
-            toast('₹' + amount + ' withdrawn!', 'success');
-            document.getElementById('withAmount').value = '';
-        };
-
-        // Close modals on outside click
-        window.onclick = function(e) {
-            if (e.target.classList.contains('modal')) {
-                e.target.classList.remove('active');
-            }
-        };
-
-        // Init
-        load();
-
-        // Demo referrals
-        if (user.refs.length === 0) {
-            setTimeout(function() {
-                user.refs = [
-                    {name: 'Rahul K.', date: '2h ago', earned: 12.50},
-                    {name: 'Priya S.', date: '5h ago', earned: 8.00}
-                ];
-                user.totalRef = 2;
-                user.activeRef = 2;
-                update();
-            }, 2000);
-        }
-
-        // Simulate ref earnings
-        setInterval(function() {
-            if (user.refs.length > 0 && Math.random() > 0.7) {
-                var earn = (Math.random() * 2).toFixed(2);
-                user.refEarn += parseFloat(earn);
-                user.balance += parseFloat(earn);
-                addActivity('ref', earn);
-                update();
-            }
-        }, 15000);
-    </script>
-</body>
-</html>
+            <!-- REFER TAB -->
+            <div id="tab-refer" class="tab-content hidden">
+                <h2 class="text-2xl font-bold mb-6">Refer & Earn</h2>
+                
+                <!-- Referral Stats -->
+                <div class="glass rounded-2xl p-6 mb-6 border border-green-500/30">
+                    <div class="text-center mb-6">
+                        <p class="text-gray-400 text-sm mb-2">Total Referral Earnings</p>
+                        <h3 class="text-4xl font-bold text-green-400">₹<span id="refTotalEarn">0.00</span></h3>
+                    </div>
+                    
+                    <div class="grid grid-cols-3 gap-4">
+                        <div class="text-center">
+                            <p id="refTotalCount" class="text-2xl font
